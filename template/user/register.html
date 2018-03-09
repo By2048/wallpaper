@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>User Register</title>
+    <link src="{% static 'lib/bootstrap/css/bootstrap.min.css' %}">
+    <script src="{% static 'lib/bootstrap/js/bootstrap.min.js' %}"></script>
+
+</head>
+<body>
+
+<form action="{% url 'user:register' %}" method="post">
+    {% csrf_token %}
+    {% for field in form %}
+        {{ field.label_tag }}
+        {{ field }}
+        {{ field.errors }}
+        {% if field.help_text %}
+            <p>{{ field.help_text|safe }}</p>
+        {% endif %}
+    {% endfor %}
+    <button type="submit">注册</button>
+</form>
+
+<div>
+    <a href={% url 'user:login' %}>已有账号登陆</a>
+</div>
+
+</body>
+</html>
