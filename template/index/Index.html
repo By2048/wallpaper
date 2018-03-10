@@ -1,10 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
-    <title>Index</title>
+    <title>Home Index</title>
+    <link rel="stylesheet" href="{% static 'lib/bootstrap/css/bootstrap.min.css' %}">
+    <script src="{% static 'lib/jquery/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap/js/bootstrap.min.js' %}"></script>
 </head>
 <body>
-    <h3>Index Page</h3>
+
+
+<div id="myCarousel" class="carousel slide">
+    <!-- 轮播（Carousel）指标 -->
+    <ol class="carousel-indicators">
+        {% for img_path in all_img_path %}
+            {% if forloop.first %}
+                <li data-target="#myCarousel" data-slide-to="{{ forloop.counter }}" class="active"></li>
+            {% else %}
+                <li data-target="#myCarousel" data-slide-to="{{ forloop.counter }}"></li>
+            {% endif %}
+        {% endfor %}
+
+    </ol>
+    <!-- 轮播（Carousel）项目 -->
+    <div class="carousel-inner">
+        {% for img_path in all_img_path %}
+            {% if forloop.first %}
+                <div class="item active">
+                    <img src="{{ img_path }}" alt="First slide">
+                </div>
+            {% else %}
+                <div class="item">
+                    <img src="{{ img_path }}" alt="Second slide">
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <!-- 轮播（Carousel）导航 -->
+    <a class="carousel-control left" href="#myCarousel"
+       data-slide="prev">&lsaquo;
+    </a>
+    <a class="carousel-control right" href="#myCarousel"
+       data-slide="next">&rsaquo;
+    </a>
+</div>
+
+
 </body>
 </html>
+
+
+
+
+
