@@ -7,12 +7,12 @@ class RegisterForm(UserCreationForm):
         model = models.User
         fields = ('username', 'email')
 
-class LoginForm():
-    pass
-
-class ChangePasswordForm():
-    pass
-
-class ResetPasswordForm():
-    pass
+# class LoginForm():
+#     pass
+#
+# class ChangePasswordForm():
+#     pass
+#
+# class ResetPasswordForm():
+#     pass
 

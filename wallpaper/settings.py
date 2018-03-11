@@ -130,3 +130,13 @@ STATICFILES_DIRS = [
 
 # 使用自己定义的 user
 AUTH_USER_MODEL = 'user.User'
+
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'app.user.backends.EmailBackend',
+)
