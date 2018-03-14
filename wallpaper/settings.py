@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app._tmp',
+    'app.category',
     'app.favorite',
     'app.image',
     'app.index',
@@ -128,15 +129,15 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
 ]
 
-# 使用自己定义的 user
-AUTH_USER_MODEL = 'user.User'
-
-LOGOUT_REDIRECT_URL = '/'
-LOGIN_REDIRECT_URL = '/'
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'app.user.backends.EmailBackend',
-)
+# # 使用自己定义的 user
+# AUTH_USER_MODEL = 'user.User'
+#
+# LOGOUT_REDIRECT_URL = '/'
+# LOGIN_REDIRECT_URL = '/'
+#
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#
+# AUTHENTICATION_BACKENDS = (
+#     'django.contrib.auth.backends.ModelBackend',
+#     # 'app.user.backends.EmailBackend',
+# )
