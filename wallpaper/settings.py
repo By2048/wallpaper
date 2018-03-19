@@ -10,13 +10,17 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
-import os, sys
+import os
+import sys
+import pymysql
+
+pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# # 添加到搜索路径
-# sys.path.insert(0, os.path.join(BASE_DIR, 'app'))
+# 设置 apps 目录
+sys.path.insert(0, os.path.join(BASE_DIR, 'app'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -38,15 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app._tmp',
+    # 'apps._tmp',
     'app.category',
-    'app.favorite',
-    'app.image',
-    'app.index',
-    'app.score',
-    'app.tag',
-    'app.user'
-
+    # 'apps.favorite',
+    # 'apps.image',
+    # 'apps.index',
+    # 'apps.score',
+    # 'apps.tag',
+    'app.user',
 ]
 
 MIDDLEWARE = [
@@ -88,6 +91,17 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'wallpaper',
+#         'HOSTNAME':'127.0.0.1',
+#         'USER': 'root',
+#         'PASSWORD': 'admin',
+#         'HOST': 'mysql',
+#         'PORT': '3306',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -130,9 +144,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
 ]
 
-# # 使用自己定义的 user
-# AUTH_USER_MODEL = 'user.User'
-#
+# UserProfile 覆盖了 django 内置的 user 表
+AUTH_USER_MODEL = 'user.UserProfile'
+
 # LOGOUT_REDIRECT_URL = '/'
 # LOGIN_REDIRECT_URL = '/'
 #

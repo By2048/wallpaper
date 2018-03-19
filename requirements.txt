@@ -1,5 +1,4 @@
 Django==2.0.3
 PyMySQL==0.8.0
-xadmin==0.6.1
 googletrans==2.2.0
 Pillow==5.0.0

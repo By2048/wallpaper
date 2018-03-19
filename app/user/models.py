@@ -1,47 +1,81 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from datetime import datetime
+from django.utils import timezone
 
 
-class User(models.Model):
+class UserProfile(AbstractUser):
     _sex = (
         ('1', '男'),
         ('0', '女'),
         ('-1', '中'),
     )
     _type = (
-        ('0', 'default'),
-        ('1', 'vip'),
+        ('1', 'general '),
+        ('2', 'vip'),
+        ('3', 'author')
     )
-    id = models.AutoField(primary_key=True, verbose_name='用户ID')
-    username = models.CharField(max_length=50, default='', verbose_name='用户名')
-    password = models.CharField(max_length=50, verbose_name='密码')
+    nickname = models.CharField(max_length=50, blank=True, null=True, verbose_name='昵称')
     image = models.ImageField(upload_to='resource/user_image', default='/static/resource/user_image/default.png',
                               null=True, blank=True, verbose_name='头像')
-    email = models.EmailField(max_length=50, verbose_name='邮箱')
-    is_active = models.BooleanField(default=False, verbose_name='用户是否可以使用')
     sex = models.CharField(max_length=10, choices=_sex, default='中', null=True, blank=True, verbose_name='性别')
     birthday = models.DateField(max_length=10, null=True, blank=True, verbose_name='生日')
     address = models.CharField(max_length=100, null=True, blank=True, verbose_name='地址')
     phone = models.CharField(max_length=11, null=True, blank=True, verbose_name='手机号')
     information = models.TextField(null=True, blank=True, verbose_name='信息')
-    date_joined = models.DateTimeField(default=datetime.now, verbose_name='注册时间')
-
-    last_login = models.DateTimeField(default=datetime.now, verbose_name='最后登录时间')
-    type = models.CharField(max_length=50, choices=_type, default='0', verbose_name='用户类型')
+    last_login = models.DateTimeField(default=timezone.now, blank=True, null=True, verbose_name='最后登录时间')
+    type = models.CharField(max_length=50, choices=_type, default='0', verbose_name='用户类型', blank=True, null=True)
     integral = models.IntegerField(default=100, verbose_name='用户积分')
 
     class Meta():
-        db_table = 'db_user'
+        db_table = 'db_user_profile'
         verbose_name = '用户信息'
         verbose_name_plural = verbose_name
 
-    # 自定义显示的信息
-    def __str__(self):
-        return '{0}({1})'.format(self.username, self.email)
+
+
+# 不使用 Django 内置的 user
+# class User(models.Model):
+#     _sex = (
+#         ('1', '男'),
+#         ('0', '女'),
+#         ('-1', '中'),
+#     )
+#     _type = (
+#         ('0', 'default'),
+#         ('1', 'vip'),
+#     )
+#     id = models.AutoField(primary_key=True, verbose_name='用户ID')
+#     username = models.CharField(max_length=50, default='', verbose_name='用户名')
+#     password = models.CharField(max_length=50, verbose_name='密码')
+#     image = models.ImageField(upload_to='resource/user_image', default='/static/resource/user_image/default.png',
+#                               null=True, blank=True, verbose_name='头像')
+#     email = models.EmailField(max_length=50, verbose_name='邮箱')
+#     is_active = models.BooleanField(default=False, verbose_name='用户是否可以使用')
+#     sex = models.CharField(max_length=10, choices=_sex, default='中', null=True, blank=True, verbose_name='性别')
+#     birthday = models.DateField(max_length=10, null=True, blank=True, verbose_name='生日')
+#     address = models.CharField(max_length=100, null=True, blank=True, verbose_name='地址')
+#     phone = models.CharField(max_length=11, null=True, blank=True, verbose_name='手机号')
+#     information = models.TextField(null=True, blank=True, verbose_name='信息')
+#     date_joined = models.DateTimeField(default=datetime.now, verbose_name='注册时间')
+#
+#     last_login = models.DateTimeField(default=datetime.now, verbose_name='最后登录时间')
+#     type = models.CharField(max_length=50, choices=_type, default='0', verbose_name='用户类型')
+#     integral = models.IntegerField(default=100, verbose_name='用户积分')
+#
+#     class Meta():
+#         db_table = 'db_user'
+#         verbose_name = '用户信息'
+#         verbose_name_plural = verbose_name
+#
+#     # 自定义显示的信息
+#     def __str__(self):
+#         return '{0}({1})'.format(self.username, self.email)
 
 
 # 用户验证
+
+
 class UserAuthentication(models.Model):
     _types = (
         ('1', '注册'),

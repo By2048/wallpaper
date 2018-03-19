@@ -17,14 +17,15 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
 
-from app.index import views as index_view
+
+# from apps.index import views as index_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('_tmp/', include('app._tmp.urls')),
-    path('category/', include('app.category.urls')),
-    path('user/', include('app.user.urls')),
-    path('', view=index_view.index, name='index'),
-    # 使用 Django 默认的登陆模板
-    path('user/', include('django.contrib.auth.urls')),
+    # path('_tmp/', include('app._tmp.urls')),
+    # path('category/', include('app.category.urls')),
+    # path('user/', include('app.user.urls')),
+    # path('', view=index_view.index, name='index'),
+    # # 使用 Django 默认的登陆模板
+    # path('user/', include('django.contrib.auth.urls')),
 ]
