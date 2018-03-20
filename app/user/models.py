@@ -5,18 +5,42 @@ from django.utils import timezone
 
 
 class UserProfile(AbstractUser):
+    """在Django中默认的Usr进行拓展
+    db_user_profile
+    id
+    password
+    is_superuser
+    username
+    first_name
+    last_name
+    email
+    is_staff
+    is_active
+    date_joined
+    nickname
+    sex
+    birthday
+    address
+    phone
+    information
+    last_login
+    type
+    coin
+    image
+    """
     _sex = (
         ('1', '男'),
         ('0', '女'),
         ('-1', '中'),
     )
     _type = (
-        ('1', 'general '),
-        ('2', 'vip'),
-        ('3', 'author')
+        ('1', '普通用户 '),
+        ('2', '会员'),
+        ('3', '作者')
     )
+
     nickname = models.CharField(max_length=50, blank=True, null=True, verbose_name='昵称')
-    image = models.ImageField(upload_to='resource/user_image', default='/static/resource/user_image/default.png',
+    image = models.ImageField(upload_to='resource/user_image', default='/resource/user_image/default.png',
                               null=True, blank=True, verbose_name='头像')
     sex = models.CharField(max_length=10, choices=_sex, default='中', null=True, blank=True, verbose_name='性别')
     birthday = models.DateField(max_length=10, null=True, blank=True, verbose_name='生日')
@@ -25,13 +49,21 @@ class UserProfile(AbstractUser):
     information = models.TextField(null=True, blank=True, verbose_name='信息')
     last_login = models.DateTimeField(default=timezone.now, blank=True, null=True, verbose_name='最后登录时间')
     type = models.CharField(max_length=50, choices=_type, default='0', verbose_name='用户类型', blank=True, null=True)
-    integral = models.IntegerField(default=100, verbose_name='用户积分')
+    coin = models.IntegerField(default=100, verbose_name='用户积分')
+
+    def __str__(self):
+        return self.username
+
+    def get_user_nickname(self):
+        return self.nickname
+
+    def get_user_username(self):
+        return self.username
 
     class Meta():
         db_table = 'db_user_profile'
         verbose_name = '用户信息'
         verbose_name_plural = verbose_name
-
 
 
 # 不使用 Django 内置的 user

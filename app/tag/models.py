@@ -1,17 +1,32 @@
 from django.db import models
+from django.utils import timezone
+from app.user.models import UserProfile
+from app.image.models import Image
 
 
-# class Tag(models.Model):
-#     id = models.IntegerField(primary_key=True)
-#     name = models.CharField(max_length=10, default='')
-#     count = models.IntegerField(default=0)
-#
-#     class Meta():
-#         db_table = 'db_tag'
-#         verbose_name = '图片标签'
-#         verbose_name_plural = verbose_name
+class Tag(models.Model):
+    name = models.CharField(max_length=10, default='')
+    count = models.IntegerField(default=0)
+
+    class Meta():
+        db_table = 'db_tag'
+        verbose_name = '标签'
+        verbose_name_plural = verbose_name
+
+    def get_tag_name(self):
+        return self.name
+
+    def __str__(self):
+        return self.name
 
 
-# class ImageTag(models.Model):
-#     id = models.AutoField(primary_key=True)
-#     # image
+class TagImage(models.Model):
+    tag = models.ForeignKey(Tag, verbose_name='标签', on_delete=models.CASCADE)
+    image = models.ForeignKey(Image, verbose_name='图片', on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, verbose_name='用户', on_delete=models.CASCADE)
+    date_add = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
+
+    class Meta():
+        db_table = 'db_tag_image'
+        verbose_name = '图片标签'
+        verbose_name_plural = verbose_name
