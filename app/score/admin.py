@@ -3,22 +3,22 @@ from app.user.models import UserProfile
 from app.image.models import Image
 from app.index import admin as index_admin
 
-from .models import Source, UserRateing
+from .models import Score, UserRateing
 
 
-@admin.register(Source)
+@admin.register(Score)
 class SourceAdmin(admin.ModelAdmin):
     def show_image(self, obj):
         return obj.image.get_image_url()
 
     show_image.short_description = '图片链接'
 
-    list_display = ('id', 'show_image', 'date_update')
-    list_display_links = ('id', 'show_image', 'date_update')
+    list_display = ('id', 'show_image', 'average_stars', 'date_update')
+    list_display_links = ('id', 'show_image', 'average_stars', 'date_update')
 
-    list_filter = ['date_update']
+    list_filter = ['date_update', 'average_stars']
 
-    search_fields = ['image__name']
+    search_fields = ['image__name', 'average_stars']
     list_per_page = 10
 
     ordering = ['id']
@@ -45,7 +45,7 @@ class UserRatingAdmin(admin.ModelAdmin):
     list_display_links = ['id', 'show_user', 'show_image', 'date_evaluation']
 
     # list_filter = ['tag__count', 'date_add']
-    list_filter = ['point', 'date_evaluation']
+    list_filter = ['start', 'date_evaluation']
 
     search_fields = ['user__name', 'image__name', 'image__url', 'date_evaluation']
 

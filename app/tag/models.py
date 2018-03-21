@@ -21,12 +21,13 @@ class Tag(models.Model):
 
 
 class TagImage(models.Model):
-    tag = models.ForeignKey(Tag, verbose_name='标签', on_delete=models.CASCADE)
+    tags = models.ManyToManyField(Tag, verbose_name='标签')
     image = models.ForeignKey(Image, verbose_name='图片', on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, verbose_name='用户', on_delete=models.CASCADE)
     date_add = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
 
+
     class Meta():
         db_table = 'db_tag_image'
-        verbose_name = '图片标签'
+        verbose_name = '用户添加的图片标签'
         verbose_name_plural = verbose_name

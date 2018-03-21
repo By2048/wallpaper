@@ -45,7 +45,7 @@ class TagAdmin(admin.ModelAdmin):
 class TagImageAdmin(admin.ModelAdmin):
 
     def show_tag(self, obj):
-        return obj.tag.get_tag_name()
+        return ','.join([item.get_tag_name() for item in obj.tags.all()])
 
     show_tag.short_description = '分类名'
 
@@ -64,6 +64,8 @@ class TagImageAdmin(admin.ModelAdmin):
 
     # list_filter = ['tag__count', 'date_add']
     list_filter = ['date_add']
+
+    filter_horizontal = ['tags']
 
     search_fields = ['tag__name', 'date_add']
 

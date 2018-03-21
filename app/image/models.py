@@ -15,7 +15,7 @@ class Image(models.Model):
         ('4', 'svg'),
     )
     name = models.CharField(max_length=50, verbose_name='图片名')
-    description = models.TextField(verbose_name='图片描述')
+    description = models.TextField(verbose_name='图片描述', null=True, blank=True)
     url = models.URLField(max_length=500, verbose_name='图片链接')
     url_thumb = models.URLField(max_length=500, verbose_name='缩略图片链接')
     # category = models.ForeignKey(Category, verbose_name='图片分类', on_delete='DO_NOTHING')
