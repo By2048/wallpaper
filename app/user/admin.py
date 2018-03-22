@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.http import HttpResponse
 from django.core import serializers
 
-from .models import *
+from .models import UserProfile, UserFavorite
+from index import admin as index_admin
 
 
 @admin.register(UserProfile)
@@ -17,7 +18,7 @@ class UserAdmin(admin.ModelAdmin):
     ordering = ['id']
     empty_value_display = '- null -'
 
-    actions = ['add_100_coin','export_as_json']
+    actions = ['add_100_coin', index_admin.export_as_json]
 
     def add_100_coin(self, request, quertset):
         user_ids = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -30,9 +31,32 @@ class UserAdmin(admin.ModelAdmin):
 
     add_100_coin.short_description = '增加 100 硬币'
 
-    def export_as_json(self, request, queryset):
-        response = HttpResponse(content_type='application/json')
-        serializers.serialize('json', queryset, stream=response)
-        return response
 
-    export_as_json.short_description = '将所选项导出为 JSON'
+
+@admin.register(UserFavorite)
+class UserFavoriteAdmin(admin.ModelAdmin):
+
+    def show_user(self, obj):
+        return obj.user.get_user_username()
+
+    show_user.short_description = '用户名'
+
+    def show_image(self, obj):
+        return obj.image.get_image_url()
+
+    show_image.short_description = '图片链接'
+
+    list_display = ['id', 'show_user', 'show_image', 'add_time']
+
+    list_display_links = ['id', 'show_user', 'show_image', 'add_time']
+
+    search_fields = ['show_user']
+
+    list_filter = ['add_time']
+
+    ordering = ['id']
+
+    list_per_page = 10
+
+    actions = [index_admin.export_as_json]
+

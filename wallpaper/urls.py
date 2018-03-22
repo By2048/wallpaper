@@ -23,8 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('_tmp/', include('app._tmp.urls')),
     # path('category/', include('app.category.urls')),
-    # path('user/', include('app.user.urls')),
+    path('user/', include('app.user.urls')),
     path('', view=index_view.index, name='index'),
     # # 使用 Django 默认的登陆模板
-    # path('user/', include('django.contrib.auth.urls')),
+    path('user/', include('django.contrib.auth.urls')),
 ]

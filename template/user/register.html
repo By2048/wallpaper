@@ -8,10 +8,12 @@
     <title>用户注册</title>
     <link rel="stylesheet" href="{% static 'lib/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'lib/bootstrap/css/bootstrap-theme.min.css' %}">
-    <script src="{% static 'lib/jquery/jquery-3.3.1.min.js' %}"></script>
+
+    <link rel="stylesheet" href="{% static 'lib/mobi.min.css' %}">
+
+    <script src="{% static 'lib/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'lib/bootstrap/js/bootstrap.min.js' %}"></script>
 
-    <link rel="stylesheet" href="https://unpkg.com/mobi.css/dist/mobi.min.css">
 
     <style>
         .errorlist {
@@ -28,7 +30,7 @@
                 <h3>注册</h3>
                 <form class="form" action="{% url 'user:register' %}" method="post">
                     {% csrf_token %}
-                    {% for field in form %}
+                    {% for field in register_form %}
                         {{ field.label_tag }}
                         {{ field }}
                         {{ field.errors }}
@@ -39,7 +41,7 @@
                     <button type="submit" class="btn btn-primary btn-block">注册</button>
                 </form>
                 <div class="flex-center top-gap text-small">
-                    <a href="login.html">已有账号登录</a>
+                    <a href="{% url 'login' %}">已有账号登录</a>
                 </div>
             </div>
         </div>

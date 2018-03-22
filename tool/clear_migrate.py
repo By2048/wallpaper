@@ -3,6 +3,7 @@ import os
 
 wallpaper_path = 'E:\\MyGit\\Wallpaper_Website\\wallpaper\\app'
 
+
 def del_all_migrations():
     for app in os.listdir(wallpaper_path):
         migrations_path = os.path.join(wallpaper_path, app, 'migrations')
@@ -16,12 +17,3 @@ def del_all_migrations():
 
 
 del_all_migrations()
-
-
-def clear_sql():
-    pass
-
-
-# str = "[www.runoob.com]"
-#
-# print ("str.center(40, '*') : ", str.center(40, ' '))
