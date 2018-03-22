@@ -1,3 +1,4 @@
+
 import hashlib
 import os
 
@@ -16,7 +17,6 @@ def get_md5(file_path):
     return hash.hexdigest()
 
 
-
 def rename(file_path):
     img_md5 = get_md5(file_path)
     folder_path = os.path.dirname(file_path)
@@ -30,12 +30,12 @@ def rename(file_path):
 
 
 def _test():
-    path = '..\\static\\_tmp\\_img\\1.jpg'
+    path = '..\\media\\6.jpg'
     print('绝对路径   ' + os.path.abspath(path))
     print('MD5       ' + get_md5(path))
 
-if __name__=='__main__':
+
+
+
+if __name__ == '__main__':
     _test()
-
-
-

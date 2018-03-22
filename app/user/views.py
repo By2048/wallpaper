@@ -14,12 +14,12 @@ class RegisterView(View):
         return render(request, 'user/register.html', context={'register_form': register_form, 'next_page': next_page})
 
     def post(self, request):
-        next_page = request.POST.get('next', '')
+        next_page = request.POST.get('next_page', '')
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
             if next_page:
-                return HttpResponseRedirect(reverse(next_page))
+                return HttpResponseRedirect(next_page)
             else:
                 return HttpResponseRedirect(reverse('index'))
         else:

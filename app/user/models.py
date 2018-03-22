@@ -3,6 +3,29 @@ from django.contrib.auth.models import AbstractUser
 from datetime import datetime
 from django.utils import timezone
 
+from django.core.files.storage import FileSystemStorage
+
+from tool import ImageTool
+
+#
+# class ImageStorage(FileSystemStorage):
+#     from django.conf import settings
+#     def __init__(self, location=settings.MEDIA_ROOT, base_url=settings.MEDIA_URL):
+#         super(ImageStorage, self).__init__(location, base_url)
+#
+#     def _save(self, name, content):
+#         import os, time, random
+#         ext = os.path.splitext(name)[1]
+#         # 文件目录
+#         d = os.path.dirname(name)
+#         # 定义文件名，年月日时分秒随机数
+#         fn = time.strftime('%Y%m%d%H%M%S')
+#         fn = fn + '_%d' % random.randint(0, 100)
+#         # 重写合成文件名
+#         name = os.path.join(d, fn + ext)
+#         return super(ImageStorage, self)._save(name, content)
+#         # 调用父类方法
+
 
 class UserProfile(AbstractUser):
     """在Django中默认的Usr进行拓展
@@ -48,9 +71,11 @@ class UserProfile(AbstractUser):
             'unique': ("此用户名已被占用！"),
         },
     )
-    nickname = models.CharField(max_length=50, default='普通用户',verbose_name='昵称', help_text='实际展示给他人的名称，可随时更改')
-    image = models.ImageField(upload_to='resource/user_image', default='/resource/user_image/default.png',
-                              null=True, blank=True, verbose_name='头像',help_text='可不设置！')
+    nickname = models.CharField(max_length=50, default='普通用户', verbose_name='昵称', help_text='实际展示给他人的名称，可随时更改')
+    image = models.ImageField(upload_to='media',
+                              # storage=ImageStorage(),
+                              # default='resource/user_image/default.png',
+                              verbose_name='头像', help_text='用户显示的头像！')
     sex = models.IntegerField(choices=_sex, default=-1, null=True, blank=True, verbose_name='性别',
                               help_text='可不填 默认为中性！')
     birthday = models.DateField(max_length=10, null=True, blank=True, verbose_name='生日', help_text='可不填！')

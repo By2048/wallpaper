@@ -142,15 +142,21 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
 ]
 
+# 资源文件路径 图片上传位置
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # UserProfile 覆盖了 django 内置的 user 表
 AUTH_USER_MODEL = 'user.UserProfile'
 
-# LOGOUT_REDIRECT_URL = '/'
-# LOGIN_REDIRECT_URL = '/'
-#
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-#
-# AUTHENTICATION_BACKENDS = (
-#     'django.contrib.auth.backends.ModelBackend',
-#     # 'app.user.backends.EmailBackend',
-# )
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
+
+# 邮件发送到终端 在开发环境下进行测试使用
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# 使用邮箱进行登陆设置
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'app.user.backends.EmailBackend',
+)
