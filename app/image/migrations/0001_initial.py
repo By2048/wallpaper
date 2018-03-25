@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
             name='HotImage',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('index', models.IntegerField(unique=True, verbose_name='图片展示顺序')),
+                ('home', models.IntegerField(unique=True, verbose_name='图片展示顺序')),
                 ('date_add', models.DateTimeField(default=django.utils.timezone.now, verbose_name='更新时间')),
             ],
             options={

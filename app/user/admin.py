@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.http import HttpResponse
 from django.core import serializers
+from django.db.models import F
 
 from .models import UserProfile, UserFavorite
 from index import admin as index_admin
@@ -22,15 +23,16 @@ class UserAdmin(admin.ModelAdmin):
 
     def add_100_coin(self, request, quertset):
         user_ids = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        # Entry.objects.all().update(n_pingbacks=F('n_pingbacks') + 1)
         for user_id in user_ids:
             user = UserProfile.objects.get(pk=user_id)
+            # user.objects.update(coin=F('coin') + 100)
             current_coin = user.coin
             user.coin = current_coin + 100
             user.save()
         self.message_user(request, "%s 个用户成功更新" % len(user_ids))
 
     add_100_coin.short_description = '增加 100 硬币'
-
 
 
 @admin.register(UserFavorite)
@@ -59,4 +61,3 @@ class UserFavoriteAdmin(admin.ModelAdmin):
     list_per_page = 10
 
     actions = [index_admin.export_as_json]
-

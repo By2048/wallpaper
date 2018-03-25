@@ -3,6 +3,7 @@ from django.views.generic.base import View
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import logout
+from django.core.mail import send_mail
 
 from .forms import RegisterForm
 
@@ -18,10 +19,17 @@ class RegisterView(View):
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
+            send_mail(
+                'Subject here',
+                'Here is the message.',
+                'user_admin@email.com',
+                [form.email],
+                fail_silently=False,
+            )
             if next_page:
                 return HttpResponseRedirect(next_page)
             else:
-                return HttpResponseRedirect(reverse('index'))
+                return HttpResponseRedirect(reverse('home'))
         else:
             register_form = RegisterForm()
             return render(request, 'user/register.html', context={'register_form': register_form})

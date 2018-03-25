@@ -16,7 +16,7 @@ class IndexView(View):
                         "http://101.132.185.153:2199/8.jpg",
                         "http://101.132.185.153:2199/9.jpg"]
 
-        return render(request, 'index/index.html', context={'all_img_path': all_img_path})
+        return render(request, 'home/index.html', context={'all_img_path': all_img_path})
 
     def post(self, request):
         all_img_path = ["http://101.132.185.153:2199/1.jpg",
@@ -29,4 +29,4 @@ class IndexView(View):
                         "http://101.132.185.153:2199/8.jpg",
                         "http://101.132.185.153:2199/9.jpg"]
 
-        return render(request, 'index/index.html', context={'all_img_path': all_img_path})
+        return render(request, 'home/index.html', context={'all_img_path': all_img_path})

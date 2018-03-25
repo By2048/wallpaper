@@ -7,7 +7,6 @@ from django.core import serializers
 from django.urls import reverse
 from index import admin as index_admin
 
-
 from .models import Image, HotImage, ImageTag, TagImage, ImageScore, UserRateing, ImageCategory, CategoryImage
 from index import admin as index_admin
 
@@ -20,13 +19,22 @@ class ImageAdmin(admin.ModelAdmin):
 
     # show_tags.short_description = '显示所有标签'
 
-    list_display = ['id', 'name', 'url', 'width', 'height', 'type']
-    list_display_links = ['id', 'name', 'url', 'width', 'height', 'type']
+    list_display = ['id', 'name', 'url', 'width', 'height', 'type', 'date_add']
+    list_display_links = ['id', 'name', 'url', 'width', 'height', 'type', 'date_add']
 
     search_fields = ['name', 'width', 'height', 'type']
 
     list_filder = ['width', 'height', 'type']
     ordering = ['id']
+
+    fields = ( 'name', 'description','url','url_thumb',( 'width', 'height','type'),'click','date_add')
+    # exclude = ('name',)  # 排除该字段
+
+    # 详细时间分层筛选　
+    date_hierarchy = 'date_add'
+
+    # 直接在列表中修改
+    # list_editable = ['name', 'url']
 
     actions = [index_admin.export_as_json]
 
@@ -45,12 +53,12 @@ class HotImageAdmin(admin.ModelAdmin):
 
     get_image_url_thumb.short_description = '图片链接'
 
-    list_display = ['id', 'index', 'get_image_name', 'get_image_url_thumb', 'date_add']
-    list_display_links = ['id', 'index', 'get_image_name', 'get_image_url_thumb', 'date_add']
+    list_display = ['id', 'home', 'get_image_name', 'get_image_url_thumb', 'date_add']
+    list_display_links = ['id', 'home', 'get_image_name', 'get_image_url_thumb', 'date_add']
 
     search_fields = ['image.name', 'width', 'height', 'type']
 
-    ordering = ['index']
+    ordering = ['home']
 
     actions = [index_admin.export_as_json]
 

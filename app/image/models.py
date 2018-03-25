@@ -7,11 +7,11 @@ from user.models import UserProfile
 
 class Image(models.Model):
     _type = (
-        ('0', 'jpg'),
-        ('1', 'png'),
-        ('2', 'gif'),
-        ('3', 'bmp'),
-        ('4', 'svg'),
+        ('jpg', 'JPG 图片'),
+        ('png', 'PNG 图片'),
+        ('gif', 'GIF 图片'),
+        ('bmp', 'BMP 图片'),
+        ('svg', 'SVG 图片'),
     )
     name = models.CharField(max_length=50, verbose_name='图片名')
     description = models.TextField(verbose_name='图片描述', null=True, blank=True)
@@ -23,6 +23,7 @@ class Image(models.Model):
     height = models.IntegerField(verbose_name='图片高度')
     type = models.CharField(max_length=10, choices=_type, verbose_name='图片格式')
     click = models.IntegerField(verbose_name='点击次数', default=0)
+    date_add=models.DateTimeField(default=timezone.now,verbose_name='图片添加时间')
 
     def __str__(self):
         return self.name + '.' + self.type

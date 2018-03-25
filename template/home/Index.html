@@ -9,7 +9,7 @@
     <script src="{% static 'lib/bootstrap/js/bootstrap.min.js' %}"></script>
     <style>
         .course {
-            width: 1000px;
+            width: 500px;
             margin: 0 auto;
         }
     </style>
@@ -17,7 +17,6 @@
 <body>
 
 <div class="course">
-
     <div id="myCarousel" class="carousel slide">
         <!-- 轮播（Carousel）指标 -->
         <ol class="carousel-indicators">
@@ -28,7 +27,6 @@
                     <li data-target="#myCarousel" data-slide-to="{{ forloop.counter }}"></li>
                 {% endif %}
             {% endfor %}
-
         </ol>
         <!-- 轮播（Carousel）项目 -->
         <div class="carousel-inner">
@@ -52,7 +50,6 @@
            data-slide="next">&rsaquo;
         </a>
     </div>
-
 </div>
 
 <div class="flex-center">
@@ -88,8 +85,3 @@
 
 </body>
 </html>
-
-
-
-
-
