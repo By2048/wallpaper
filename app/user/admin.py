@@ -4,7 +4,7 @@ from django.core import serializers
 from django.db.models import F
 
 from .models import UserProfile, UserFavorite
-from index import admin as index_admin
+from home import admin as index_admin
 
 
 @admin.register(UserProfile)

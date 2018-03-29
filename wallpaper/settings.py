@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import sys
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -45,7 +44,7 @@ INSTALLED_APPS = [
     # 'app.score',
     'app.image',
     'app.user',
-    'app.index',
+    'app.home',
     'captcha',
     'pure_pagination',
 ]
@@ -96,7 +95,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'wallpaper',
-        'HOSTNAME':'wallpaper_mysql',
+        'HOSTNAME': 'wallpaper_mysql',
         'USER': 'root',
         'PASSWORD': 'mysql_password',
         'HOST': '127.0.0.1',
@@ -144,8 +143,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
 ]
-
-
 
 # UserProfile 覆盖了 django 内置的 user 表
 AUTH_USER_MODEL = 'user.UserProfile'

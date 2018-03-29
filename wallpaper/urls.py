@@ -19,16 +19,17 @@ from django.conf.urls import include
 from django.views.static import serve
 from django.conf import settings
 
-from index.views import IndexView
+from home.views import IndexView as HomeIndex
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('_tmp/', include('app._tmp.urls')),
-    # path('category/', include('app.category.urls')),
-    path('user/', include('app.user.urls')),
-    path('', view=IndexView.as_view(), name='home'),
+    path("captcha/", include('captcha.urls')),
     # 使用 Django 默认的登陆模板
     path('user/', include('django.contrib.auth.urls')),
-    path("captcha/", include('captcha.urls')),
+
     re_path(r'^media/(?P<path>.*)', serve, {"document_root": settings.MEDIA_ROOT}),
+
+    path('', view=HomeIndex.as_view(), name='index'),
+    path('user/', include('app.user.urls')),
+    path('home/', include('home.urls')),
 ]

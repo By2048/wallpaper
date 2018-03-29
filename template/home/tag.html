@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Category</title>
+    <style>
+        .activate {
+            color: red;
+        }
+    </style>
+</head>
+<br>
+
+{% for tag in tags.object_list %}
+    {{ tag.name }} </br>
+    {{ tag.count }}
+{% endfor %}
+
+
+
+<div class="pagination">
+    <span class="step-links">
+        {% if tags.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ tags.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ tags.number }} of {{ tags.paginator.num_pages }}.
+        </span>
+
+        {% if tags.has_next %}
+            <a href="?page={{ tags.next_page_number }}">next</a>
+            <a href="?page={{ tags.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+<ul class="pagelist">
+    <a href="?page=1">&laquo; first</a>
+    {% if tags.has_previous %}
+        <li class="long"><a href="?{{ tags.previous_page_number.querystring }}">上一页</a></li>
+    {% endif %}
+
+    {% for page in tags.pages %}
+        {% if page %}
+            {% ifequal page tags.number %}
+                <li class="activate"><a href="?{{ page.querystring }}">{{ page }}</a></li>
+            {% else %}
+                <li><a href="?{{ page.querystring }}">{{ page }}</a></li>
+            {% endifequal %}
+        {% endif %}
+    {% endfor %}
+
+    {% if tags.has_next %}
+        <li><a href="?{{ tags.next_page_number.querystring }}">下一页</a></li>
+    {% endif %}
+    <a href="?page={{ tags.paginator.num_pages }}">last &raquo;</a>
+</ul>
+
+</body>
+</html>

@@ -5,10 +5,10 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.core import serializers
 from django.urls import reverse
-from index import admin as index_admin
+from home import admin as index_admin
 
 from .models import Image, HotImage, ImageTag, TagImage, ImageScore, UserRateing, ImageCategory, CategoryImage
-from index import admin as index_admin
+from home import admin as index_admin
 
 
 @admin.register(Image)
@@ -53,12 +53,12 @@ class HotImageAdmin(admin.ModelAdmin):
 
     get_image_url_thumb.short_description = '图片链接'
 
-    list_display = ['id', 'home', 'get_image_name', 'get_image_url_thumb', 'date_add']
-    list_display_links = ['id', 'home', 'get_image_name', 'get_image_url_thumb', 'date_add']
+    list_display = ['id', 'index', 'get_image_name', 'get_image_url_thumb', 'date_add']
+    list_display_links = ['id', 'index', 'get_image_name', 'get_image_url_thumb', 'date_add']
 
     search_fields = ['image.name', 'width', 'height', 'type']
 
-    ordering = ['home']
+    ordering = ['index']
 
     actions = [index_admin.export_as_json]
 

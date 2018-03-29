@@ -4,13 +4,10 @@ from datetime import datetime
 from django.utils import timezone
 
 from django.core.files.storage import FileSystemStorage
-
 from captcha.fields import CaptchaField
-
 from tool import ImageTool
 
 
-#
 # class ImageStorage(FileSystemStorage):
 #     from django.conf import settings
 #     def __init__(self, location=settings.MEDIA_ROOT, base_url=settings.MEDIA_URL):
