@@ -7,28 +7,53 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 import os
 
-from image.models import ImageCategory, ImageTag
+from image.models import Category, Tag, Image, Carousel
 
 
-@method_decorator(login_required)
-class IndexView(LoginRequiredMixin, View):
+class IndexView(View):
+    # @method_decorator(login_required)
     def get(self, request):
-        all_img_path = ["http://101.132.185.153:2199/1.jpg",
-                        "http://101.132.185.153:2199/2.jpg",
-                        "http://101.132.185.153:2199/3.jpg",
-                        "http://101.132.185.153:2199/4.jpg",
-                        "http://101.132.185.153:2199/5.jpg",
-                        "http://101.132.185.153:2199/6.jpg",
-                        "http://101.132.185.153:2199/7.jpg",
-                        "http://101.132.185.153:2199/8.jpg",
-                        "http://101.132.185.153:2199/9.jpg"]
+        hot_images = Image.objects.all().order_by('click')[:10]
 
-        return render(request, 'home/index.html', context={'all_img_path': all_img_path})
+        if request.user.is_authenticated:
+            recommend_images = []  # 推荐给用户的图片
+        else:
+            recommend_images = []
+
+        carousel = Carousel.objects.all().order_by('index')
+        carousel_images = []
+        for item in carousel:
+            carousel_images.append(item.image.url_thumb)
+
+        return render(request, 'home/index.html', context={
+            'hot_images': hot_images,
+            'recommend_images': recommend_images,
+            'carousel_images': carousel_images
+        })
+
+
+# class IndexView(LoginRequiredMixin, View):
+#     login_url = 'user/login/'
+#     pass
+
+class CategoryView(View):
+    """分类视图
+    根据分类的ID来显示分类下的图片
+    """
+
+    def get(self, request):
+        all_category = Category.objects.all()
+        category_id = request.GET.get('category_id', 1)
+        category_images = Image.objects.filter(category__id=category_id)[:20]
+        return render(request, 'home/category.html', context={
+            'all_category': all_category,
+            'category_image': category_images
+        })
 
 
 class TagView(View):
     def get(self, request):
-        all_tag = ImageTag.objects.all()
+        all_tag = Tag.objects.all()
 
         try:
             page = request.GET.get('page', 1)
@@ -38,27 +63,6 @@ class TagView(View):
         p = Paginator(all_tag, 10, request=request)
 
         tags = p.page(page)
-        return render(request, 'home/tag.html', context={'tags': tags})
-
-#
-# from django.shortcuts import render_to_response
-#
-# from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
-#
-# # 尝试获取页数参数
-# try:
-#     page = request.GET.get('page', 1)
-# except PageNotAnInteger:
-#     page = 1
-# # objects是取到的数据
-# objects = ['john', 'edward', 'josh', 'frank']
-#
-# # Provide Paginator with the request object for complete querystring generation
-# # 对于取到的数据进行分页处理。
-# p = Paginator(objects, request=request)
-# # 此时前台显示的就应该是我们此时获取的第几页的数据
-# people = p.page(page)
-#
-# return render_to_response('index.html', {
-#     'people': people,
-# }
+        return render(request, 'home/tag.html', context={
+            'tags': tags
+        })

@@ -14,11 +14,11 @@ from .models import UserProfile
 class RegisterView(View):
     def get(self, request):
         register_form = RegisterForm()
-        next_page = request.GET.get('next_page', '')
-        return render(request, 'user/register.html', context={'register_form': register_form, 'next_page': next_page})
+        next = request.GET.get('next', '')
+        return render(request, 'user/register.html', context={'register_form': register_form, 'next': next})
 
     def post(self, request):
-        next_page = request.POST.get('next_page', '')
+        next = request.POST.get('next', '')
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
@@ -29,10 +29,10 @@ class RegisterView(View):
                 [form.email],
                 fail_silently=False,
             )
-            if next_page:
-                return HttpResponseRedirect(next_page)
+            if next:
+                return HttpResponseRedirect(next)
             else:
-                return HttpResponseRedirect(reverse('home'))
+                return HttpResponseRedirect(reverse('index'))
         else:
             register_form = RegisterForm()
             return render(request, 'user/register.html', context={'register_form': register_form})
@@ -232,20 +232,3 @@ class RegisterView(View):
 #         })
 #
 #
-# ## 首页view
-# class IndexView(View):
-#     def get(self, request):
-#         # 取出轮播图
-#         all_banner = Banner.objects.all().order_by('index')[:5]
-#         # 正常位课程
-#         courses = Course.objects.filter(is_banner=False)[:6]
-#         # 轮播图课程取三个
-#         banner_courses = Course.objects.filter(is_banner=True)[:3]
-#         # 课程机构
-#         course_orgs = CourseOrg.objects.all()[:15]
-#         return render(request, 'index.html', {
-#             "all_banner": all_banner,
-#             "courses": courses,
-#             "banner_courses": banner_courses,
-#             "course_orgs": course_orgs,
-#         })
