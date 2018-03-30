@@ -124,7 +124,7 @@ class UserAuthentication(models.Model):
         verbose_name_plural = verbose_name
 
 
-class UserFavorite(models.Model):
+class Favorite(models.Model):
     user = models.ForeignKey(UserProfile, null=True, verbose_name='用户', on_delete=models.CASCADE)
     image = models.ForeignKey('image.Image', null=True, verbose_name='图片', on_delete=models.CASCADE)
     add_time = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
@@ -133,12 +133,12 @@ class UserFavorite(models.Model):
         return "{0}    {1}".format(self.user.username, self.image.url)
 
     class Meta:
-        db_table = 'db_user_favorite'
+        db_table = 'db_favorite'
         verbose_name = '用户收藏'
         verbose_name_plural = verbose_name
 
 
-class UserMessage(models.Model):
+class Message(models.Model):
     from_user = models.ForeignKey(UserProfile, related_name='from_user', verbose_name='发送的用户', on_delete=models.CASCADE)
     to_user = models.ForeignKey(UserProfile, related_name='to_user', verbose_name='接受的用户', on_delete=models.CASCADE)
     message = models.CharField(max_length=1000, verbose_name='消息内容')
@@ -146,18 +146,18 @@ class UserMessage(models.Model):
     date_send = models.DateTimeField(default=timezone.now, verbose_name='消息发送时间')
 
     class Meta:
-        db_table = 'db_user_message'
+        db_table = 'db_message'
         verbose_name = '用户消息'
         verbose_name_plural = verbose_name
 
 
-class UserComment(models.Model):
+class Comment(models.Model):
     image = models.ForeignKey('image.Image', null=True, verbose_name='图片', on_delete=models.CASCADE)
     user = models.ForeignKey(UserProfile, verbose_name='用户', on_delete=models.CASCADE)
     comment = models.CharField(max_length=1000, verbose_name='评论内容')
     date_add = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
 
     class Meta:
-        db_table = 'db_user_comment'
+        db_table = 'db_comment'
         verbose_name = '用户评论'
         verbose_name_plural = verbose_name

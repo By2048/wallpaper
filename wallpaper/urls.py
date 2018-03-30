@@ -26,9 +26,7 @@ urlpatterns = [
     path("captcha/", include('captcha.urls')),
     # 使用 Django 默认的登陆模板
     path('user/', include('django.contrib.auth.urls')),
-
     re_path(r'^media/(?P<path>.*)', serve, {"document_root": settings.MEDIA_ROOT}),
-
     path('', view=IndexView.as_view(), name='index'),
     path('user/', include('app.user.urls')),
     path('home/', include('home.urls')),

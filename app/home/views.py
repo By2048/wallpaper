@@ -66,3 +66,28 @@ class TagView(View):
         return render(request, 'home/tag.html', context={
             'tags': tags
         })
+
+class HotView(View):
+    def get(self,request):
+        hot_image=Image.objects.all().order_by('click')[:30]
+
+        return render(request,)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

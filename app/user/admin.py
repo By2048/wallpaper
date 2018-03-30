@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.core import serializers
 from django.db.models import F
 
-from .models import UserProfile, UserFavorite
+from .models import UserProfile, Favorite
 from home import admin as index_admin
 
 
@@ -35,7 +35,7 @@ class UserAdmin(admin.ModelAdmin):
     add_100_coin.short_description = '增加 100 硬币'
 
 
-@admin.register(UserFavorite)
+@admin.register(Favorite)
 class UserFavoriteAdmin(admin.ModelAdmin):
 
     def show_user(self, obj):
