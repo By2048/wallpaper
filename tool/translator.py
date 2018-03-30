@@ -8,10 +8,9 @@ def en_to_cn(english):
 
 
 def _test():
-    zh_cn = en_to_cn('The quick brown fox')
+    zh_cn = en_to_cn('wallpaper')
     print(zh_cn)
 
 
-_test()
-
-
+if __name__ == "__main__":
+    _test()

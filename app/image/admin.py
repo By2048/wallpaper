@@ -7,7 +7,7 @@ from django.core import serializers
 from django.urls import reverse
 from home import admin as index_admin
 
-from .models import Image, HotImage, ImageTag, TagImage, ImageScore, UserRateing, ImageCategory, CategoryImage
+from .models import Image, Carousel, Tag, TagImage, ImageScore, UserRateing, Category, CategoryImage
 from home import admin as index_admin
 
 
@@ -27,7 +27,7 @@ class ImageAdmin(admin.ModelAdmin):
     list_filder = ['width', 'height', 'type']
     ordering = ['id']
 
-    fields = ( 'name', 'description','url','url_thumb',( 'width', 'height','type'),'click','date_add')
+    fields = ('name', 'description', 'categorys', 'url', 'url_thumb', ('width', 'height', 'type'), 'click', 'date_add')
     # exclude = ('name',)  # 排除该字段
 
     # 详细时间分层筛选　
@@ -41,8 +41,8 @@ class ImageAdmin(admin.ModelAdmin):
     list_per_page = 10
 
 
-@admin.register(HotImage)
-class HotImageAdmin(admin.ModelAdmin):
+@admin.register(Carousel)
+class CarouselAdmin(admin.ModelAdmin):
     def get_image_name(self, obj):
         return obj.image.name
 
@@ -63,8 +63,8 @@ class HotImageAdmin(admin.ModelAdmin):
     actions = [index_admin.export_as_json]
 
 
-@admin.register(ImageTag)
-class ImageTagAdmin(admin.ModelAdmin):
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
     class CountFilter(admin.SimpleListFilter):
         title = '标签数量'
         parameter_name = 'count'
@@ -183,8 +183,8 @@ class UserRatingAdmin(admin.ModelAdmin):
     empyt_value_dispaly = '- null -'
 
 
-@admin.register(ImageCategory)
-class ImageCategoryAdmin(admin.ModelAdmin):
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
     # def upper_case_name(obj):
     #     return obj.name.upper()
     # upper_case_name.short_description = 'Upper Name'
