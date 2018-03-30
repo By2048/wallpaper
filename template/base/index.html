@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}index{% endblock %}</title>
+    {% block css_js %}{% endblock %}
+</head>
+<body>
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+    <h1>index page</h1>
+{% endblock %}
+
+{% block  footer %}
+{% endblock %}
+
+{% include 'base/site_info.html' %}
+
+</body>
+</html>
