@@ -19,7 +19,7 @@ from django.conf.urls import include
 from django.views.static import serve
 from django.conf import settings
 
-from home.views import IndexView as HomeIndex
+from home.views import IndexView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,7 +29,7 @@ urlpatterns = [
 
     re_path(r'^media/(?P<path>.*)', serve, {"document_root": settings.MEDIA_ROOT}),
 
-    path('', view=HomeIndex.as_view(), name='index'),
+    path('', view=IndexView.as_view(), name='index'),
     path('user/', include('app.user.urls')),
     path('home/', include('home.urls')),
 ]
