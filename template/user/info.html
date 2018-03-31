@@ -1,0 +1,29 @@
+{% extends 'base/index.html' %}
+
+{% block title %}用户信息{% endblock %}
+
+{% block css_js %}
+    {% load static %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    {{ user_info.email }} </br>
+    {{ user_info.date_joined }} </br>
+    {{ user_info.username }} </br>
+    {{ user_info.nickname }} </br>
+    {{ user_info.image }} </br>
+    {{ user_info.sex }} </br>
+    {{ user_info.birthday }} </br>
+    {{ user_info.address }} </br>
+    {{ user_info.phone }} </br>
+    {{ user_info.information }} </br>
+    {{ user_info.last_login }} </br>
+    {{ user_info.type }} </br>
+    {{ user_info.coin }} </br>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+

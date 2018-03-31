@@ -169,4 +169,4 @@ PAGINATION_SETTINGS = {
     'SHOW_FIRST_PAGE_WHEN_INVALID': True,
 }
 
-LOGIN_URL='/user/login'
+LOGIN_URL='/user/login/'

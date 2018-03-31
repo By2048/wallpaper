@@ -52,9 +52,9 @@ class UserProfile(AbstractUser):
     image
     """
     _sex = (
-        ('male', '男'),
-        ('female', '女'),
-        ('neutral', '中'),
+        ('1', '男'),
+        ('0', '女'),
+        ('-1', '中'),
     )
     _type = (
         ('user', '普通用户'),
@@ -76,8 +76,8 @@ class UserProfile(AbstractUser):
                               # storage=ImageStorage(),
                               default='resource/user_image/default.png',
                               verbose_name='头像', help_text='用户显示的头像！')
-    sex = models.IntegerField(choices=_sex, default=-1, null=True, blank=True, verbose_name='性别',
-                              help_text='可不填 默认为中性！')
+    sex = models.CharField(max_length=3, choices=_sex, default='-1', null=True, blank=True, verbose_name='性别',
+                           help_text='可不填 默认为中性！')
     birthday = models.DateField(max_length=10, null=True, blank=True, verbose_name='生日', help_text='可不填！')
     address = models.CharField(max_length=100, null=True, blank=True, verbose_name='地址', help_text='可不填！')
     phone = models.CharField(max_length=11, null=True, blank=True, verbose_name='手机号', help_text='可不填！')

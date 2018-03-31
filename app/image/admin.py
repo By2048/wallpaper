@@ -7,7 +7,7 @@ from django.core import serializers
 from django.urls import reverse
 from home import admin as index_admin
 
-from .models import Image, Carousel, Tag, TagImage, ImageScore, UserRateing, Category, CategoryImage
+from .models import Image, Carousel, Tag, TagImage, ImageScore, Rating, Category, CategoryImage
 from home import admin as index_admin
 
 
@@ -154,8 +154,8 @@ class ImageSourceAdmin(admin.ModelAdmin):
     actions = [index_admin.export_as_json]
 
 
-@admin.register(UserRateing)
-class UserRatingAdmin(admin.ModelAdmin):
+@admin.register(Rating)
+class RatingAdmin(admin.ModelAdmin):
 
     def show_user(self, obj):
         return obj.user.get_user_username()
@@ -167,13 +167,13 @@ class UserRatingAdmin(admin.ModelAdmin):
 
     show_image.short_description = '图片链接'
 
-    list_display = ['id', 'show_user', 'show_image', 'date_evaluation']
-    list_display_links = ['id', 'show_user', 'show_image', 'date_evaluation']
+    list_display = ['id', 'show_user', 'show_image', 'date_add']
+    list_display_links = ['id', 'show_user', 'show_image', 'date_add']
 
     # list_filter = ['tag__count', 'date_add']
-    list_filter = ['start', 'date_evaluation']
+    list_filter = ['star', 'date_add']
 
-    search_fields = ['user__name', 'image__name', 'image__url', 'date_evaluation']
+    search_fields = ['user__name', 'image__name', 'image__url', 'date_add']
 
     ordering = ['id']
     list_per_page = 10

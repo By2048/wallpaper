@@ -109,8 +109,8 @@ class ImageScore(models.Model):
         verbose_name_plural = verbose_name
 
 
-class UserRateing(models.Model):
-    _point = (
+class Rating(models.Model):
+    _star = (
         (1, '1 星'),
         (2, '2 星'),
         (3, '3 星'),
@@ -119,11 +119,11 @@ class UserRateing(models.Model):
     )
     user = models.ForeignKey(UserProfile, verbose_name='评价的用户', on_delete=models.DO_NOTHING)
     image = models.ForeignKey(Image, verbose_name='评价的图片', on_delete=models.DO_NOTHING)
-    start = models.IntegerField(choices=_point, verbose_name='得分')
-    date_evaluation = models.DateTimeField(default=timezone.now, verbose_name='评分时间')
+    star = models.IntegerField(choices=_star, verbose_name='得分')
+    date_add = models.DateTimeField(default=timezone.now, verbose_name='评分时间')
 
     class Meta():
-        db_table = 'db_user_rateing'
+        db_table = 'db_rating'
         verbose_name = '用户评分'
         verbose_name_plural = verbose_name
 

@@ -11,7 +11,6 @@ from image.models import Category, Tag, Image, Carousel
 
 
 class IndexView(View):
-    # @method_decorator(login_required)
     def get(self, request):
         hot_images = Image.objects.all().order_by('click')[:10]
 
@@ -33,7 +32,8 @@ class IndexView(View):
 
 
 # class IndexView(LoginRequiredMixin, View):
-#     login_url = 'user/login/'
+#     login_url = '/user/login/'
+#     redirect_field_name = 'next'
 #     pass
 
 class CategoryView(View):
@@ -67,27 +67,10 @@ class TagView(View):
             'tags': tags
         })
 
+
 class HotView(View):
-    def get(self,request):
-        hot_image=Image.objects.all().order_by('click')[:30]
-
-        return render(request,)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    def get(self, request):
+        hot_images = Image.objects.all().order_by('click')[:30]
+        return render(request, 'home/hot.html', context={
+            'hot_images': hot_images
+        })

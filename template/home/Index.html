@@ -1,5 +1,7 @@
 {% extends 'base/index.html' %}
+
 {% block title %}Home Index{% endblock %}
+
 {% block css_js %}
     {% load static %}
     {{ block.super }}
@@ -47,9 +49,9 @@
     <div class="flex-center">
         <div class="container">
             <div>
-                <h1 class="logo"><a href="{% url 'index' %}">Django Auth Example</a></h1>
+                <h1 class="logo"><a href="{% url 'index' %}">Wallpaper</a></h1>
                 {% if user.is_authenticated %}
-                    <p>你已登录，欢迎你：<a href="#">{{ user.username }}</a></p>
+                    <p>用户名  <a href="#">{{ user.username }}</a></p>
                     <button class="btn btn-default"><a href="{% url 'logout' %}?next={{ request.path }}">注销登录</a>
                     </button>
                     <button class="btn btn-default"><a
