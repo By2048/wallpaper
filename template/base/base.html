@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}index{% endblock %}</title>
+    {% block css_js %}
+        {% load static %}
+        <script src="{% static 'lib/jquery-3.3.1.min.js' %}"></script>
+        <script src="{% static 'lib/bootstrap/js/bootstrap.min.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'lib/bootstrap/css/bootstrap.min.css' %}">
+        <script src="{% static 'lib/toastr/toastr.min.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'lib/toastr/toastr.min.css' %}">
+        <link rel="stylesheet" href="{% static 'base/base.css' %}">
+    {% endblock %}
+</head>
+<body>
+
+<div id="main">
+
+    {% block head %}
+        {% include 'base/navigation.html' %}
+    {% endblock %}
+
+    {% block content %}
+
+    {% endblock %}
+
+    {% block foot %}
+        {% include 'base/site_info.html' %}
+    {% endblock %}
+
+</div>
+
+</body>
+</html>

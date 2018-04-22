@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>上传文件</title>
+
+    <script src="{% static 'lib/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'lib/toastr/toastr.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/toastr/toastr.min.css' %}">
+
+    <script>
+        $(document).ready(function () {
+            $("#btn").click(function () {
+                toastr.info("rwerwe");
+            });
+        });
+    </script>
+
+</head>
+<body>
+<form method="post" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="uploadfile" accept="image/*" multiple="multiple"><br/><br/><br/>
+    <input type="submit" value="提交"/>
+</form>
+<br/>
+
+{% for file_url in all_file_url %}
+    <img src={{ file_url }} width="100px"/>
+{% endfor %}
+
+
+<button id="btn">test-toastr</button>
+
+
+<br/>
+
+{{ res }}
+ 
+</body>
+</html>

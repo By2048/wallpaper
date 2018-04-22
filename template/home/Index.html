@@ -1,75 +1,83 @@
-{% extends 'base/index.html' %}
+{% extends 'base/base.html' %}
 
-{% block title %}Home Index{% endblock %}
+{% block title %}Wallpaper Index{% endblock %}
 
 {% block css_js %}
     {% load static %}
     {{ block.super }}
-    <link href="{% static 'home/index.css' %}">
+    <link rel="stylesheet" href="{% static 'home/index.css' %}">
 {% endblock %}
 
 
 {% block content %}
-    <div class="course">
-        <div id="myCarousel" class="carousel slide">
-            <!-- 轮播（Carousel）指标 -->
-            <ol class="carousel-indicators">
-                {% for img_path in all_img_path %}
-                    {% if forloop.first %}
-                        <li data-target="#myCarousel" data-slide-to="{{ forloop.counter }}" class="active"></li>
-                    {% else %}
-                        <li data-target="#myCarousel" data-slide-to="{{ forloop.counter }}"></li>
-                    {% endif %}
-                {% endfor %}
-            </ol>
-            <!-- 轮播（Carousel）项目 -->
-            <div class="carousel-inner">
-                {% for img_path in all_img_path %}
-                    {% if forloop.first %}
-                        <div class="item active">
-                            <img src="{{ img_path }}" alt="First slide">
-                        </div>
-                    {% else %}
-                        <div class="item">
-                            <img src="{{ img_path }}" alt="Second slide">
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-            <!-- 轮播（Carousel）导航 -->
-            <a class="carousel-control left" href="#myCarousel"
-               data-slide="prev">&lsaquo;
-            </a>
-            <a class="carousel-control right" href="#myCarousel"
-               data-slide="next">&rsaquo;
-            </a>
+
+    <div id="carousel-image" class="carousel slide container">
+        <ol class="carousel-indicators">
+            {% for img_path in carousel_images %}
+                {% if forloop.first %}
+                    <li data-target="#carousel-image" data-slide-to="{{ forloop.counter }}" class="active"></li>
+                {% else %}
+                    <li data-target="#carousel-image" data-slide-to="{{ forloop.counter }}"></li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+
+        <div class="carousel-inner">
+            {% for image in carousel_images %}
+                {% if forloop.first %}
+                    <div class="item active">
+                        <img class="d-block w-100" src="{{ image.url }}">
+                        <div class="carousel-caption">{{ image.url }}</div>
+                    </div>
+                {% else %}
+                    <div class="item">
+                        <img class="d-block w-100" src="{{ image.url }}">
+                        <div class="carousel-caption">{{ image.url }}</div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <a class="left carousel-control" href="#carousel-image" role="button" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">上一个</span>
+        </a>
+        <a class="right carousel-control" href="#carousel-image" role="button" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">下一个</span>
+        </a>
+    </div>
+
+    <h3>热门图片</h3>
+
+    <div id="hot-image">
+        <div class="row">
+            {% for image in hot_images %}
+                <div class="col-sm-6 col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="{{ image.url }}" alt="{{ image.url }}">
+                    </a>
+                </div>
+            {% endfor %}
         </div>
     </div>
 
-    <div class="flex-center">
-        <div class="container">
-            <div>
-                <h1 class="logo"><a href="{% url 'index' %}">Wallpaper</a></h1>
-                {% if user.is_authenticated %}
-                    <p>用户名  <a href="#">{{ user.username }}</a></p>
-                    <button class="btn btn-default"><a href="{% url 'logout' %}?next={{ request.path }}">注销登录</a>
-                    </button>
-                    <button class="btn btn-default"><a
-                            href="{% url 'password_change' %}?next={{ request.path }}">修改密码</a>
-                    </button>
-                {% else %}
-                    <p>你还没有登录，请
-                        <button class="btn btn-default">
-                            <a href="{% url 'login' %}?next_page={{ request.path }}">登录</a>
-                        </button>
-                        或者
-                        <button class="btn btn-default">
-                            <a href="{% url 'user:register' %}?next_page={{ request.path }}">注册</a>
-                        </button>
-                    </p>
-                {% endif %}
+    <h3>用户推荐的图片</h3>
+
+    <div id="recommend-image">
+        {% if recommend_images %}
+            <div class="row">
+                {% for image in recommend_images %}
+                    <div class="col-sm-6 col-md-3">
+                        <a href="#" class="thumbnail">
+                            <img src="{{ image.url }}" alt="{{ image.url }}">
+                        </a>
+                    </div>
+                {% endfor %}
             </div>
-        </div>
+        {% else %}
+            登陆
+        {% endif %}
+
     </div>
 
     {#<script>#}
@@ -79,4 +87,3 @@
     {#<script type='text/javascript' charset='UTF-8' src='https://www.xianliao.me/embed.js'></script>#}
 
 {% endblock %}
-

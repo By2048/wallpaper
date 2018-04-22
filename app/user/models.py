@@ -28,29 +28,7 @@ from tool import ImageTool
 
 
 class UserProfile(AbstractUser):
-    """在Django中默认的Usr进行拓展
-    db_user_profile
-    id
-    password
-    is_superuser
-    username
-    first_name
-    last_name
-    email
-    is_staff
-    is_active
-    date_joined
-    nickname
-    sex
-    birthday
-    address
-    phone
-    information
-    last_login
-    type
-    coin
-    image
-    """
+    """在Django中默认的Usr进行拓展"""
     _sex = (
         ('1', '男'),
         ('0', '女'),
@@ -85,6 +63,7 @@ class UserProfile(AbstractUser):
     last_login = models.DateTimeField(default=timezone.now, blank=True, null=True, verbose_name='最后登录时间')
     type = models.IntegerField(choices=_type, default=1, verbose_name='用户类型', blank=True, null=True)
     coin = models.IntegerField(default=100, verbose_name='用户积分')
+    sign_in_times = models.IntegerField(default=0, verbose_name='签到次数')
 
     def __str__(self):
         return self.username
@@ -160,4 +139,16 @@ class Comment(models.Model):
     class Meta:
         db_table = 'db_comment'
         verbose_name = '用户评论'
+        verbose_name_plural = verbose_name
+
+
+class BlackHouse(models.Model):
+    user = models.ForeignKey(UserProfile, verbose_name='用户', on_delete=models.CASCADE)
+    date_add = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
+    date_end = models.IntegerField(default=6, verbose_name='封禁的时间 小时')
+    reason = models.TextField(default='', verbose_name='添加原因')
+
+    class Meta:
+        db_table = 'db_black_house'
+        verbose_name = '小黑屋'
         verbose_name_plural = verbose_name

@@ -1,16 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>图片详情</title>
-</head>
-<body>
+{% extends 'base/base.html' %}
 
-{{ image.id }}
-{{ image.name }}
-{{ image.description }}
-{{ image.url_thumb }}
+{% block title %}{{ image.name }} 图片详情{% endblock %}
+
+{% block css_js %}
+    {% load static %}
+    {{ block.super }}
+{% endblock %}
 
 
-</body>
-</html>
+{% block content %}
+    {{ image.id }}
+    {{ image.name }}
+    {{ image.description }}
+    {{ image.url_thumb }}
+{% endblock %}
+
+
+

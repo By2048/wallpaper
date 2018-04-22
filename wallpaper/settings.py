@@ -40,11 +40,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'app.category',
-    # 'app.tag'@
+    # 'app.tag'
     # 'app.score',
     'app.image',
     'app.user',
     'app.home',
+    'app.tmp',
+
     'captcha',
     'pure_pagination',
 ]

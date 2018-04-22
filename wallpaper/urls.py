@@ -24,10 +24,11 @@ from home.views import IndexView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("captcha/", include('captcha.urls')),
-    # 使用 Django 默认的登陆模板
-    path('user/', include('django.contrib.auth.urls')),
+    path('user/', include('django.contrib.auth.urls')), # 使用 Django 默认的登陆模板
     re_path(r'^media/(?P<path>.*)', serve, {"document_root": settings.MEDIA_ROOT}),
     path('', view=IndexView.as_view(), name='index'),
     path('user/', include('app.user.urls')),
+    path('', include('home.urls')),
     path('home/', include('home.urls')),
+    path('tmp/', include('tmp.urls')),
 ]

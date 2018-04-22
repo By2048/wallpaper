@@ -1,4 +1,4 @@
-import sqlite3
+# coding=utf-8
 import random
 import pymysql
 

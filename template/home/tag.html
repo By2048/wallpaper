@@ -1,4 +1,4 @@
-{% extends 'base/index.html' %}
+{% extends 'base/base.html' %}
 
 {% block title %}All Category{% endblock %}
 
@@ -21,7 +21,7 @@
         </span>
 
         {% if tags.has_next %}
-            <a href="?page={{ tags.next_page_number }}">next</a>
+            <a href="?page={{ tags.next_number }}">next</a>
             <a href="?page={{ tags.paginator.num_pages }}">last &raquo;</a>
         {% endif %}
     </span>
@@ -44,7 +44,7 @@
         {% endfor %}
 
         {% if tags.has_next %}
-            <li><a href="?{{ tags.next_page_number.querystring }}">下一页</a></li>
+            <li><a href="?{{ tags.next_number.querystring }}">下一页</a></li>
         {% endif %}
         <a href="?page={{ tags.paginator.num_pages }}">last &raquo;</a>
     </ul>

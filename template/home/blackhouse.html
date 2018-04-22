@@ -1,0 +1,26 @@
+{% extends 'base/base.html' %}
+
+{% block title %}小黑屋{% endblock %}
+
+{% block css_js %}
+    {% load static %}
+    {{ block.super }}
+{% endblock %}
+
+
+{% block content %}
+    {% if message %}
+        {{ message }}
+    {% endif %}
+
+    {% for item in black_houses %}
+        {{ item.user.get_username }}
+        {{ item.date_add }}
+        {{ item.date_end }}
+        {{ item.reason }}
+    {% endfor %}
+{% endblock %}
+
+
+{% block footer %}
+{% endblock %}

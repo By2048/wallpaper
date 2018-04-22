@@ -1,10 +1,15 @@
+import datetime
+import logging
+
 from django.contrib import admin
 from django.http import HttpResponse
 from django.core import serializers
 from django.db.models import F
 
-from .models import UserProfile, Favorite
+from .models import UserProfile, Favorite, BlackHouse
 from home import admin as index_admin
+
+logging.basicConfig(level=logging.INFO)
 
 
 @admin.register(UserProfile)
@@ -22,6 +27,8 @@ class UserAdmin(admin.ModelAdmin):
     actions = ['add_100_coin', index_admin.export_as_json]
 
     def add_100_coin(self, request, quertset):
+        # todo 换种写法
+        # queryset.delete()
         user_ids = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
         # Entry.objects.all().update(n_pingbacks=F('n_pingbacks') + 1)
         for user_id in user_ids:
@@ -61,3 +68,31 @@ class UserFavoriteAdmin(admin.ModelAdmin):
     list_per_page = 10
 
     actions = [index_admin.export_as_json]
+
+
+@admin.register(BlackHouse)
+class BlackHouseAdmin(admin.ModelAdmin):
+    def show_user(self, obj):
+        return obj.user.get_user_username()
+
+    show_user.short_description = '用户名'
+
+    def get_end_time(self, obj):
+        end_time = obj.date_add + datetime.timedelta(minutes=obj.date_end)
+        return end_time
+
+    get_end_time.short_description = '结束时间'
+
+    list_display = ['id', 'show_user', 'date_add', 'date_end', 'get_end_time', 'reason']
+
+    list_display_links = ['id', 'show_user', 'date_end', 'reason']
+
+    search_fields = ['show_user', 'date_add', 'reason']
+
+    list_filter = ['date_end']
+
+    ordering = ['id']
+
+    list_per_page = 10
+
+    actions = []

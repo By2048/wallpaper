@@ -1,7 +1,10 @@
+# coding=utf-8
+import json
+import logging
+
 from django.shortcuts import render
 from django.views.generic.base import View
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import logout
 from django.core.mail import send_mail
@@ -9,13 +12,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
-import json
-
 from user.forms import RegisterForm
 from user.models import UserProfile
 from user.models import Favorite
 from user.models import Comment
-
 from image.models import Image
 from image.models import Rating
 
@@ -24,7 +24,7 @@ class RegisterView(View):
     def get(self, request):
         register_form = RegisterForm()
         next = request.GET.get('next', '')
-        return render(request, 'user/register.html', context={'register_form': register_form, 'next': next})
+        return render(request, 'user/register.html', {'register_form': register_form, 'next': next})
 
     def post(self, request):
         next = request.POST.get('next', '')
@@ -44,7 +44,7 @@ class RegisterView(View):
                 return HttpResponseRedirect(reverse('index'))
         else:
             register_form = RegisterForm()
-            return render(request, 'user/register.html', context={'register_form': register_form})
+            return render(request, 'user/register.html', {'register_form': register_form, 'next': next})
 
 
 @csrf_exempt
@@ -83,30 +83,23 @@ class AddFavorite(LoginRequiredMixin, View):
                 return HttpResponse(json_data, content_type='application/json')
 
 
-class RatingImage(LoginRequiredMixin, View):
-    def post(self, request):
+def RatingImage(request):
+    """
+    用户评分图片
+    """
+    if request.method == 'POST':
         image_id = request.POST.get('image_id', 0)
         star = request.POST.get('star', 0)
         if image_id == 0 or star == 0:
-            dict_data = {
-                'status': 'fail',
-                'message': 'image_id star empty'
-            }
-            json_data = json.dumps(dict_data)
-            return HttpResponse(json_data, content_type='application/json')
+            data = {'status': 'fail', 'message': '图片ID/用户评分错误！'}
         else:
             image = Image.objects.get(pk=image_id)
-            rating = Rating.objects.filter(user=request.user, image=image)
+            rating = Rating.objects.get(user=request.user, image=image)
             if rating:
                 rating.star = star
                 rating.date_add = timezone.now()
                 rating.save()
-                dict_data = {
-                    'status': 'success',
-                    'message': '重新评分成功！'
-                }
-                json_data = json.dumps(dict_data)
-                return HttpResponse(json_data, content_type='application/json')
+                message = '重新评分成功！'
             else:
                 rating = Rating()
                 rating.star = star
@@ -114,14 +107,12 @@ class RatingImage(LoginRequiredMixin, View):
                 rating.image = image
                 rating.date_add = timezone.now()
                 rating.save()
-                dict_data = {
-                    'status': 'success',
-                    'message': '评分成功！'
-                }
-                json_data = json.dumps(dict_data)
-                return HttpResponse(json_data, content_type='application/json')
+                message = '评分成功！'
+            data = {'status': 'success', 'message': message, }
+        return JsonResponse(data)
 
-        # # 发送邮箱验证码的view:
+
+# 发送邮箱验证码的view:
 
 
 class SentMessage(LoginRequiredMixin, View):
@@ -138,30 +129,47 @@ class AddComment(LoginRequiredMixin, View):
         comment.user = request.user
         comment.date_add = timezone.now()
         comment.save()
-        dict_data = {
-            'status': 'success',
-            'message': '评论成功！'
-        }
-        json_data = json.dumps(dict_data)
-        return HttpResponse(json_data, content_type='application/json')
+        data = {'status': 'success', 'message': '评论成功！'}
+        return JsonResponse(data)
 
 
 class UserinfoView(LoginRequiredMixin, View):
     def get(self, request):
-        user_profile = UserProfile.objects.get(pk=request.user.id)
-        user_info = {
-            'email': user_profile.email,
-            'date_joined': user_profile.date_joined,
-            'username': user_profile.username,
-            'nickname': user_profile.nickname,
-            'image': user_profile.image,
-            'sex': user_profile.get_sex_display(),
-            'birthday': user_profile.birthday,
-            'address': user_profile.address,
-            'phone': user_profile.phone,
-            'information': user_profile.information,
-            'last_login': user_profile.last_login,
-            'type': user_profile.type,
-            'coin': user_profile.coin
-        }
-        return render(request, 'user/info.html', {'user_info': user_info})
+        user = request.user
+        return render(request, 'user/info.html', {'user': user})
+
+
+class Recharge(LoginRequiredMixin, View):
+    def get(self, request):
+        user = request.user
+        return render(request, 'user/recharge.html', {'user': user})
+
+    def post(self, request):
+        user = request.user
+        coin_num = request.POST.get('coin_num', 0)
+        if coin_num > 0:
+            if user.is_active == True:
+                user.coin += coin_num
+                user.save()
+                message = '充值成功！'
+            else:
+                message = '用户未激活'
+        else:
+            message = '输入的硬币数量错误'
+        return render(request, 'user/recharge.html', {'user': user, 'message': message})
+
+
+class SignIn(LoginRequiredMixin, View):
+    """
+    用户签到模块
+    """
+
+    def get(self, request):
+        user = request.user
+        if user.is_active == False:
+            data = {'status': 'fail', 'message': '用户未激活'}
+        else:
+            user.coin += 1
+            user.save()
+            data = {'status': 'success', 'message': '签到成功！'}
+        return JsonResponse(data)

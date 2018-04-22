@@ -1,8 +1,13 @@
+# coding=utf-8
 from django.urls import path
-from .views import IndexView, TagView
+
+from home.views import IndexView, TagView, BlackHouseView
+from home.views import test_ajax
 
 app_name = 'home'
 
 urlpatterns = [
-    path('tag/', TagView.as_view(), name='tag')
+    path('tag/', TagView.as_view(), name='tag'),
+    path('blackhouse/', BlackHouseView.as_view(), name='blackhouse'),
+    path('test_ajax/', test_ajax, name='test_ajax'),
 ]

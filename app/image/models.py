@@ -1,6 +1,6 @@
-from django.utils import timezone
-
+# coding=utf-8
 from django.db import models
+from django.utils import timezone
 
 from user.models import UserProfile
 

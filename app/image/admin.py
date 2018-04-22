@@ -1,14 +1,10 @@
-from django.contrib import admin
+# coding=utf-8
 from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
-from django.http import HttpResponse
-from django.core import serializers
-from django.urls import reverse
-from home import admin as index_admin
 
-from .models import Image, Carousel, Tag, TagImage, ImageScore, Rating, Category, CategoryImage
 from home import admin as index_admin
+from .models import Image, Carousel, Tag, TagImage, ImageScore, Rating, Category, CategoryImage
 
 
 @admin.register(Image)
