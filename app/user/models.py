@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from django.core.files.storage import FileSystemStorage
 from captcha.fields import CaptchaField
-from tool import ImageTool
+from tool import image_tool
 
 
 # class ImageStorage(FileSystemStorage):
@@ -50,10 +50,10 @@ class UserProfile(AbstractUser):
         },
     )
     nickname = models.CharField(max_length=50, default='用户默认昵称', verbose_name='昵称', help_text='实际展示给他人的名称，可随时更改')
-    image = models.ImageField(upload_to='image/%Y/%m',
-                              # storage=ImageStorage(),
-                              default='resource/user_image/default.png',
-                              verbose_name='头像', help_text='用户显示的头像！')
+    picture = models.ImageField(upload_to='image/%Y/%m',
+                                # storage=ImageStorage(),
+                                default='resource/user_image/default.png',
+                                verbose_name='头像', help_text='用户显示的头像！')
     sex = models.CharField(max_length=3, choices=_sex, default='-1', null=True, blank=True, verbose_name='性别',
                            help_text='可不填 默认为中性！')
     birthday = models.DateField(max_length=10, null=True, blank=True, verbose_name='生日', help_text='可不填！')
@@ -78,6 +78,7 @@ class UserProfile(AbstractUser):
         db_table = 'db_user_profile'
         verbose_name = '用户信息'
         verbose_name_plural = verbose_name
+
 
 
 # 用户验证

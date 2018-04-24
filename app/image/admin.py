@@ -1,10 +1,12 @@
 # coding=utf-8
+import datetime
+
 from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
 
 from home import admin as index_admin
-from .models import Image, Carousel, Tag, TagImage, ImageScore, Rating, Category, CategoryImage
+from image.models import Image, Carousel, Tag, TagImage, ImageScore, Rating, Category, CategoryImage
 
 
 @admin.register(Image)
@@ -23,7 +25,8 @@ class ImageAdmin(admin.ModelAdmin):
     list_filder = ['width', 'height', 'type']
     ordering = ['id']
 
-    fields = ('name', 'description', 'categorys', 'url', 'url_thumb', ('width', 'height', 'type'), 'click', 'date_add')
+    fields = ('name', 'description', 'categorys', 'url', 'url_thumb',
+              ('width', 'height', 'type'), 'click', ('user', 'date_add'))
     # exclude = ('name',)  # 排除该字段
 
     # 详细时间分层筛选　
@@ -243,9 +246,6 @@ class CategoryAdmin(admin.ModelAdmin):
     # admin.site.disable_action('delete_selected')
 
 
-# 旧式的添加方法
-# admin.site.register(Category, CategoryAdmin)
-
 @admin.register(CategoryImage)
 class CategoryImageAdmin(admin.ModelAdmin):
 
@@ -277,3 +277,45 @@ class CategoryImageAdmin(admin.ModelAdmin):
     actions = [index_admin.export_as_json]
 
     empyt_value_dispaly = '- null -'
+
+
+from image.models import HotImage
+
+
+@admin.register(HotImage)
+class HotImageAdmin(admin.ModelAdmin):
+
+    def show_image(self, obj):
+        return obj.image.get_image_url()
+
+    show_image.short_description = '图片链接'
+
+    def show_exist_time(self, obj):
+        date_add = obj.date_add
+        data_now = datetime.datetime.now()
+        seconds = (data_now - date_add).seconds
+        if seconds < 3600:
+            return str(seconds // 60) + ' 分钟'
+        else:
+            return str(seconds // 3600) + ' 小时'
+
+    show_exist_time.short_description = '已经添加的时间'
+
+    def show_click(self, obj):
+        return obj.image.click
+
+    show_click.short_description = '图片点击的次数'
+
+    list_display = ['index', 'show_image', 'date_add', 'show_exist_time', 'show_click']
+
+    fields = ('index', 'show_image', 'date_add', 'show_exist_time', 'show_click')
+
+    ordering = ['index']
+
+    # def get_readonly_fields(self, request, obj=None):
+    #     """  重新定义此函数，限制普通用户所能修改的字段  """
+    #     if request.user.is_superuser:
+    #         self.readonly_fields = []
+    #     return self.readonly_fields
+
+    readonly_fields = ('index', 'show_image', 'date_add', 'show_exist_time', 'show_click')

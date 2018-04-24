@@ -36,7 +36,7 @@ class UploadImageForm(forms.ModelForm):
     # 用于文件上传，修改头像
     class Meta:
         model = UserProfile
-        fields = ['image']
+        fields = ['picture']
 
 
 # 用于个人中心修改个人信息

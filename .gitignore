@@ -1,6 +1,6 @@
 .idea
-db.sqlite3
-migrations/
+migrations/*
 __pycache__/
-
-env/
+app/tmp
+media/image
+.db

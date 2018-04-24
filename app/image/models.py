@@ -22,7 +22,7 @@ class Category(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=10, default='')
+    name = models.CharField(max_length=500, default='')
     count = models.IntegerField(default=0)
 
     class Meta():
@@ -45,7 +45,8 @@ class Image(models.Model):
         ('bmp', 'BMP 图片'),
         ('svg', 'SVG 图片'),
     )
-    name = models.CharField(max_length=50, verbose_name='图片名')
+    user = models.ForeignKey(UserProfile, null=True, verbose_name='上传的用户', on_delete=models.DO_NOTHING)
+    name = models.CharField(max_length=500, verbose_name='图片名', null=True, blank=True, default='')
     description = models.TextField(verbose_name='图片描述', null=True, blank=True)
     url = models.URLField(max_length=500, verbose_name='图片链接')
     url_thumb = models.URLField(max_length=500, verbose_name='缩略图片链接')
@@ -69,6 +70,23 @@ class Image(models.Model):
     class Meta:
         db_table = 'db_image'
         verbose_name = '图片'
+        verbose_name_plural = verbose_name
+
+
+class HotImage(models.Model):
+    index = models.AutoField(primary_key=True, verbose_name='图片序号')
+    image = models.ForeignKey(Image, verbose_name='热门图片', on_delete=models.CASCADE)
+    date_add = models.DateTimeField(default=timezone.now, verbose_name='图片添加时间')
+
+    def __str__(self):
+        return self.image.name
+
+    def get_image_url(self):
+        return self.image.url
+
+    class Meta:
+        db_table = 'db_hot_image'
+        verbose_name = '热门图片'
         verbose_name_plural = verbose_name
 
 

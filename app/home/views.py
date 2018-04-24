@@ -37,10 +37,7 @@ class IndexView(View):
         })
 
 
-# class IndexView(LoginRequiredMixin, View):
-#     login_url = '/user/login/'
-#     redirect_field_name = 'next'
-#     pass
+
 
 class CategoryView(View):
     """分类视图

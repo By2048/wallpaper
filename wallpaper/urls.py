@@ -29,6 +29,6 @@ urlpatterns = [
     path('', view=IndexView.as_view(), name='index'),
     path('user/', include('app.user.urls')),
     path('', include('home.urls')),
-    path('home/', include('home.urls')),
+    # path('home/', include('home.urls')),
     path('tmp/', include('tmp.urls')),
 ]
