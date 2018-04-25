@@ -7,7 +7,8 @@ from user.models import UserProfile
 
 class Category(models.Model):
     name = models.CharField(max_length=50, verbose_name='分类名')
-    count = models.IntegerField(default=0, verbose_name='分类数量')
+    date_add = models.DateTimeField(default=timezone.now, verbose_name='添加的时间')
+    user = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING, verbose_name='添加的用户')
 
     class Meta:
         db_table = 'db_category'
@@ -23,7 +24,8 @@ class Category(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=500, default='')
-    count = models.IntegerField(default=0)
+    data_add = models.DateTimeField(default=timezone.now, verbose_name='添加的时间')
+    user = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING, verbose_name='添加的用户')
 
     class Meta():
         db_table = 'db_tag'
@@ -143,19 +145,4 @@ class Rating(models.Model):
     class Meta():
         db_table = 'db_rating'
         verbose_name = '用户评分'
-        verbose_name_plural = verbose_name
-
-
-class CategoryImage(models.Model):
-    category = models.ForeignKey(Category, verbose_name='分类', on_delete=models.CASCADE)
-    image = models.ForeignKey('image.Image', verbose_name='图片', on_delete=models.CASCADE)
-    user = models.ForeignKey('user.UserProfile', verbose_name='用户', on_delete=models.DO_NOTHING)
-    date_add = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
-
-    def __str__(self):
-        return "{0} {1}".format(self.category.name, self.image.name)
-
-    class Meta():
-        db_table = 'db_category_image'
-        verbose_name = '图片分类'
         verbose_name_plural = verbose_name

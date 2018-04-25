@@ -6,7 +6,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
 
 from home import admin as index_admin
-from image.models import Image, Carousel, Tag, TagImage, ImageScore, Rating, Category, CategoryImage
+from image.models import HotImage
+from image.models import Image, Carousel, Tag, TagImage, ImageScore, Rating, Category
 
 
 @admin.register(Image)
@@ -244,42 +245,6 @@ class CategoryAdmin(admin.ModelAdmin):
 
     # 禁用默认的删除选项
     # admin.site.disable_action('delete_selected')
-
-
-@admin.register(CategoryImage)
-class CategoryImageAdmin(admin.ModelAdmin):
-
-    def show_category(self, obj):
-        return obj.category.get_category_name()
-
-    show_category.short_description = '分类名'
-
-    def show_image(self, obj):
-        return obj.image.get_image_url()
-
-    show_image.short_description = '图片链接'
-
-    def show_user(self, obj):
-        return obj.user.get_user_username()
-
-    show_user.short_description = '用户'
-
-    list_display = ['id', 'show_category', 'show_image', 'show_user', 'date_add']
-    list_display_links = ['id', 'show_category', 'show_image', 'show_user', 'date_add']
-
-    list_filter = ['category__name', 'date_add']
-
-    search_fields = ['category__name', 'date_add']
-
-    ordering = ['id']
-    list_per_page = 10
-
-    actions = [index_admin.export_as_json]
-
-    empyt_value_dispaly = '- null -'
-
-
-from image.models import HotImage
 
 
 @admin.register(HotImage)
