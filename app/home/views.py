@@ -37,8 +37,6 @@ class IndexView(View):
         })
 
 
-
-
 class CategoryView(View):
     """分类视图
     根据分类的ID来显示分类下的图片
@@ -118,3 +116,15 @@ def test_ajax(request):
         logging.error(pp)
         logging.error('stop')
         return JsonResponse({"success": "23sdr123====7879789"})
+
+
+@csrf_exempt
+def serarch_image(request):
+    images = []
+    if request.method == 'POST':
+        img_info = request.POST.get('img_info')
+        try:
+            img_id = int(img_info)
+            images = Image.objects.get(pk=img_id)
+        except ValueError:
+            pass

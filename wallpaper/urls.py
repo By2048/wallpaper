@@ -28,6 +28,7 @@ urlpatterns = [
     re_path(r'^media/(?P<path>.*)', serve, {"document_root": settings.MEDIA_ROOT}),
     path('', view=IndexView.as_view(), name='index'),
     path('user/', include('app.user.urls')),
+    path('image/', include('app.image.urls')),
     path('', include('home.urls')),
     # path('home/', include('home.urls')),
     path('tmp/', include('tmp.urls')),

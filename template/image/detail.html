@@ -5,15 +5,278 @@
 {% block css_js %}
     {% load static %}
     {{ block.super }}
+    <style>
+        .image-view {
+            width: 1300px;
+        }
+
+        .image-info .breadcrumb {
+            float: left;
+        }
+
+        {#.image-info button {#}
+        {#    float: right;#}
+        {#\}#}
+        .tags, .categorys, .click-num {
+            float: right;
+        }
+
+        .image-other-info {
+            margin-top: 20px;
+            clear: both;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+
+            {% if message %}
+                toastr.error('{{ message }}');
+            {% endif %}
+
+            $(".btn-add-tag").click(function () {
+                if ('{{ user.is_authenticated }}' == 'True') {
+                    $("#tag-modal").modal();
+                } else {
+                    toastr.error('请先登陆！');
+                }
+            });
+
+
+            $(".btn-add-category").click(function () {
+                if ('{{ user.is_authenticated }}' == 'True') {
+                    $("#category-modal").modal();
+                } else {
+                    toastr.error('请先登陆！');
+                }
+            });
+
+            $(".btn-tag-submit").click(function () {
+                var image_id ={{ image_id }};
+                var tag_name = $("input[name='tag_name']").val()
+                $.ajax({
+                    type: "post",
+                    url: "{% url 'image:add_tag' %}",
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        "image_id": image_id,
+                        "tag_name": tag_name
+                    },
+                    success: function (data) {
+                        if (data.status == 'success') {
+                            toastr.info(data.message);
+                        } else {
+                            toastr.error(data.message);
+                        }
+                    }
+                });
+            });
+
+
+            $(".btn-category-submit").click(function () {
+                {#var obj = document.getElementById("all-category");#}
+                {#for (var i = 0; i < obj.options.length; i++) {#}
+                {#    var item = obj.options[i];#}
+                {#    var index = item.selectedIndex;#}
+                {#    var text = item.options[index].getAttribute("id");#}
+                {#    toastr.info(text);#}
+                {#\}#}
+                var category_ids = ',';
+                var image_id ={{ image_id }};
+                $('#all-category option:selected').each(function () {
+                    {#toastr.info($(this).val());#}
+                    {#toastr.info($(this).attr('category_id'));#}
+                    category_ids += ($(this).attr('category_id')) + ',';
+
+                });
+
+                $.ajax({
+                    type: "post",
+                    url: "{% url 'image:add_category' %}",
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        "image_id": image_id,
+                        "category_ids": category_ids,
+                    },
+                    success: function (data) {
+                        if (data.status == 'success') {
+                            toastr.info(data.message);
+                        } else {
+                            toastr.error(data.message);
+                        }
+                    }
+                });
+
+            });
+
+
+        });
+    </script>
+
+
+{% endblock %}
+
+
+
+{% block head %}
+    <div class="modal fade" id="tag-modal" role="dialog">
+        <!--  定义模态框，过渡效果为淡入，id为myModal,tabindex=-1可以禁用使用tab切换，aria-labelledby用于引用模态框的标题，aria-hidden=true保持模态框在触发前窗口不可见  -->
+        <div class="modal-dialog" style="width: 400px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <center><h4>请输入标签内容！</h4></center>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="image_id" value="{{ image_id }}">
+                    <input type="text" name="tag_name" class="form-control" placeholder="请输入标签名"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-info btn-tag-submit">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="category-modal" role="dialog">
+        <div class="modal-dialog" style="width: 400px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <center><h4>选择分类</h4></center>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="image_id" value="{{ image_id }}">
+                    <div class="form-group">
+                        <select multiple class="form-control" id="all-category" style="height: 300px;">
+                            {% for item in all_categorys %}
+                                <option category_id="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-info btn-category-submit">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 
 {% block content %}
-    {{ image.id }}
-    {{ image.name }}
-    {{ image.description }}
-    {{ image.url_thumb }}
+
+
+    <div class="image-info">
+
+        <ol class="breadcrumb">
+            <li><a href="{% url "index" %}">Wallpaper</a></li>
+            <li>图片详情</li>
+            <li class="active">图片ID > {{ image_id }}</li>
+        </ol>
+
+
+        <div class="click-num">
+            <button class="btn btn-default" type="button">
+                点击的次数 <span class="badge">{{ click }}</span>
+            </button>
+
+        </div>
+
+
+        <div class="tags">
+            <button class="btn btn-default" type="button">
+                <span class="badge">标签</span>
+            </button>
+
+            {% for item in tags|slice:":3" %}
+                <button class="btn btn-default" type="button">
+                    <span class="badge">{{ item.name }}</span>
+                </button>
+            {% endfor %}
+
+            {% if tags|length > 3 %}
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        其余标签
+                    </button>
+                    <div class="dropdown-menu">
+                        {% for item in tags|slice:"3:" %}
+                            <span class="dropdown-item btn btn-default">{{ item.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+
+            <button class="btn btn-default  btn-add-tag" type="button">
+                <span class="badge">+</span>
+            </button>
+        </div>
+
+        <div class="categorys">
+
+            <button class="btn btn-default" type="button">
+                <span class="badge">分类</span>
+            </button>
+            {% for item in categorys|slice:":2" %}
+                <button class="btn btn-default" type="button">
+                    <span class="badge">{{ item.name }}</span>
+                </button>
+            {% endfor %}
+
+            {% if categorys|length > 2 %}
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        其余标签
+                    </button>
+                    <div class="dropdown-menu">
+                        {% for item in categorys|slice:"2:" %}
+                            <span class="dropdown-item btn btn-default">{{ item.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            <button class="btn btn-default" type="button">
+                <span class="badge btn-add-category">+</span>
+            </button>
+        </div>
+
+
+    </div>
+
+    <div class="image-view">
+        <img src="{{ MEDIA_URL }}image/7bd029fee26b3b582d7c34cccbed9184.jpg"
+             alt="{{ MEDIA_URL }}"
+             style="width: {{ show_width }}px;height: {{ show_height }}px;">
+    </div>
+
+    <div style="text-align: center; clear: both;margin-top: 10px;">
+        <span type="button" class="btn btn-default">图片名</span>
+        <span type="button" class="btn btn-default">{{ name }}</span>
+    </div>
+    <div style="margin-top: 10px;margin-bottom: 10px">
+        {% if description != None %}
+            <textarea class="form-control" style="width: 1000px;margin: 0 auto; text-align: center" cols="1" rows="1">暂无描述</textarea>
+        {% else %}
+            <textarea class="form-control" style="width: 1000px;margin: 0 auto; font-size: 17px;text-align: center"
+                      rows="3">{{ description }}</textarea>
+        {% endif %}
+    </div>
+
+
+
+
+    <div class="operation">
+
+    </div>
+
+
 {% endblock %}
+
+
 
 
 

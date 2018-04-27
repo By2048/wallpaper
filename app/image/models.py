@@ -7,8 +7,8 @@ from user.models import UserProfile
 
 class Category(models.Model):
     name = models.CharField(max_length=50, verbose_name='分类名')
+    user = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING, verbose_name='添加的用户', null=True)
     date_add = models.DateTimeField(default=timezone.now, verbose_name='添加的时间')
-    user = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING, verbose_name='添加的用户')
 
     class Meta:
         db_table = 'db_category'
@@ -24,8 +24,8 @@ class Category(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=500, default='')
+    user = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING, verbose_name='添加的用户', null=True)
     data_add = models.DateTimeField(default=timezone.now, verbose_name='添加的时间')
-    user = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING, verbose_name='添加的用户')
 
     class Meta():
         db_table = 'db_tag'
@@ -105,17 +105,6 @@ class Carousel(models.Model):
         verbose_name = '轮播图'
         verbose_name_plural = verbose_name
 
-
-class TagImage(models.Model):
-    tags = models.ManyToManyField(Tag, verbose_name='标签')
-    image = models.ForeignKey(Image, verbose_name='图片', on_delete=models.CASCADE)
-    user = models.ForeignKey(UserProfile, verbose_name='用户', on_delete=models.CASCADE)
-    date_add = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
-
-    class Meta():
-        db_table = 'db_tag_image'
-        verbose_name = '用户添加的图片标签'
-        verbose_name_plural = verbose_name
 
 
 class ImageScore(models.Model):

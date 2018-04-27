@@ -1,0 +1,79 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+
+{% block css_js %}
+
+
+    {{ block.super }}
+    <script>
+        {#var viewer = new Viewer(document.getElementById('dowebok'), {#}
+        {#    url: 'data-original'#}
+        {#\});#}
+
+
+        // View a list of images
+    </script>
+
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+    <link href="{% static 'lib/bootstrap-star-rating/css/star-rating.min.css' %}" media="all" rel="stylesheet"
+          type="text/css"/>
+
+    <link href="{% static 'lib/bootstrap-star-rating/themes/krajee-fa/theme.css' %}" media="all" rel="stylesheet"
+          type="text/css"/>
+    <link href="{% static 'lib/bootstrap-star-rating/themes/krajee-svg/theme.css' %}" media="all" rel="stylesheet"
+          type="text/css"/>
+    <link href="{% static 'lib/bootstrap-star-rating/themes/krajee-uni/theme.css' %}" media="all" rel="stylesheet"
+          type="text/css"/>
+
+    <script src="{% static 'lib/bootstrap-star-rating/js/star-rating.min.js' %}" type="text/javascript"></script>
+
+    <script src="{% static 'lib/bootstrap-star-rating/js/locales/zh.js' %}"></script>
+
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="docs-galley">
+        <ul id="image">
+            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="错纳湖"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="青藏高原"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="大昭寺"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="布达拉宫1"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="布达拉宫2"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="布达拉宫3"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="拉萨河"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="纳木措1"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="纳木措2"></li>
+
+        </ul>
+    </div>
+
+    <button id="btn1">qqqqqq</button>
+    <script>
+
+        document.getElementById('btn1').onclick = function () {
+            viewer.show();
+        }
+
+        var viewer = new Viewer(document.getElementById('image'), {
+            url: 'data-original',
+            {#viewed: function () {#}
+            {#    viewer.zoomTo(1);#}
+            {#    toastr.info('viewd....');#}
+            {#\}#}
+        });
+
+
+        {#var viewer = new Viewer(document.getElementById('image'), {#}
+        {#    viewed: function () {#}
+        {#        viewer.zoomTo(1);#}
+        {#        toastr.info('viewd....');#}
+        {#    });#}
+    </script>
+
+
+
+{% endblock %}

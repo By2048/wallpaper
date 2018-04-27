@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 
 from home import admin as index_admin
 from image.models import HotImage
-from image.models import Image, Carousel, Tag, TagImage, ImageScore, Rating, Category
+from image.models import Image, Carousel, Tag, ImageScore, Rating, Category
 
 
 @admin.register(Image)
@@ -81,8 +81,8 @@ class TagAdmin(admin.ModelAdmin):
             if self.value() == '1':
                 return queryset.filter(count__gte='100')
 
-    list_display = ('id', 'name', 'count')
-    list_display_links = ('id', 'name', 'count')
+    list_display = ('id', 'name')
+    list_display_links = ('id', 'name')
 
     list_filter = (CountFilter,)
 
@@ -96,40 +96,40 @@ class TagAdmin(admin.ModelAdmin):
     actions = [index_admin.export_as_json]
 
 
-@admin.register(TagImage)
-class TagImageAdmin(admin.ModelAdmin):
-
-    def show_tag(self, obj):
-        return ','.join([item.get_tag_name() for item in obj.tags.all()])
-
-    show_tag.short_description = '分类名'
-
-    def show_image(self, obj):
-        return obj.image.get_image_url()
-
-    show_image.short_description = '图片链接'
-
-    def show_user(self, obj):
-        return obj.user.get_user_username()
-
-    show_user.short_description = '用户'
-
-    list_display = ['id', 'show_tag', 'show_image', 'show_user', 'date_add']
-    list_display_links = ['id', 'show_tag', 'show_image', 'show_user', 'date_add']
-
-    # list_filter = ['tag__count', 'date_add']
-    list_filter = ['date_add']
-
-    filter_horizontal = ['tags']
-
-    search_fields = ['tag__name', 'date_add']
-
-    ordering = ['id']
-    list_per_page = 10
-
-    actions = [index_admin.export_as_json]
-
-    empyt_value_dispaly = '- null -'
+# @admin.register(TagImage)
+# class TagImageAdmin(admin.ModelAdmin):
+#
+#     def show_tag(self, obj):
+#         return ','.join([item.get_tag_name() for item in obj.tags.all()])
+#
+#     show_tag.short_description = '分类名'
+#
+#     def show_image(self, obj):
+#         return obj.image.get_image_url()
+#
+#     show_image.short_description = '图片链接'
+#
+#     def show_user(self, obj):
+#         return obj.user.get_user_username()
+#
+#     show_user.short_description = '用户'
+#
+#     list_display = ['id', 'show_tag', 'show_image', 'show_user', 'date_add']
+#     list_display_links = ['id', 'show_tag', 'show_image', 'show_user', 'date_add']
+#
+#     # list_filter = ['tag__count', 'date_add']
+#     list_filter = ['date_add']
+#
+#     filter_horizontal = ['tags']
+#
+#     search_fields = ['tag__name', 'date_add']
+#
+#     ordering = ['id']
+#     list_per_page = 10
+#
+#     actions = [index_admin.export_as_json]
+#
+#     empyt_value_dispaly = '- null -'
 
 
 @admin.register(ImageScore)
@@ -206,8 +206,8 @@ class CategoryAdmin(admin.ModelAdmin):
             if self.value() == '1':
                 return queryset.filter(count__gte='300')
 
-    list_display = ('id', 'name', 'count')
-    list_display_links = ('id', 'name', 'count')
+    list_display = ('id', 'name')
+    list_display_links = ('id', 'name')
 
     list_filter = (CountFilter,)
     show_full_result_count = True
