@@ -106,7 +106,6 @@ class Carousel(models.Model):
         verbose_name_plural = verbose_name
 
 
-
 class ImageScore(models.Model):
     image = models.OneToOneField(Image, verbose_name='图片', on_delete=models.DO_NOTHING)
     average_stars = models.FloatField(verbose_name='图片的平均得分')
@@ -128,7 +127,8 @@ class Rating(models.Model):
     )
     user = models.ForeignKey(UserProfile, verbose_name='评价的用户', on_delete=models.DO_NOTHING)
     image = models.ForeignKey(Image, verbose_name='评价的图片', on_delete=models.DO_NOTHING)
-    star = models.IntegerField(choices=_star, verbose_name='得分')
+    # star = models.IntegerField(choices=_star, verbose_name='得分')
+    star = models.FloatField(verbose_name='得分')
     date_add = models.DateTimeField(default=timezone.now, verbose_name='评分时间')
 
     class Meta():

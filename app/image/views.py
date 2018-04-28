@@ -9,6 +9,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
 from image.models import Image, Tag, Category
+from user.models import Favorite
 
 
 class DetailView(View):
@@ -17,6 +18,11 @@ class DetailView(View):
             data = {'message': '此图片不存在!'}
         else:
             image = Image.objects.get(pk=image_id)
+            favorite = Favorite.objects.filter(user=request.user, image=image)
+            if favorite:
+                is_favorite = 'True'
+            else:
+                is_favorite = 'False'
             data = {
                 'image_id': image_id,
                 'name': image.name if image.name else image.id,
@@ -30,6 +36,7 @@ class DetailView(View):
                 'tags': image.tags.all(),
                 'all_categorys': Category.objects.all(),
                 'categorys': image.categorys.all(),
+                'is_favorite': is_favorite,
             }
         return render(request, 'image/detail.html', data)
 

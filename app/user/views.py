@@ -47,74 +47,72 @@ class RegisterView(View):
             return render(request, 'user/register.html', {'register_form': register_form, 'next': next})
 
 
-@csrf_exempt
-class AddFavorite(LoginRequiredMixin, View):
-    def post(self, request):
+def add_favorite(request):
+    if request.method == 'POST':
         image_id = request.POST.get('image_id', 0)
         if image_id == 0:
-            dict_data = {
-                'status': 'fail',
-                'message': 'id error'
-            }
-            json_data = json.dumps(dict_data)
-            return HttpResponse(json_data, content_type='application/json')
+            status = 'fail'
+            message = '图片ID错误！'
         else:
             image = Image.objects.get(pk=image_id)
-            favorite = Favorite.objects.get(user=request.user, image=image)
+            favorite = Favorite.objects.filter(user=request.user, image=image)
             if favorite:
                 favorite.delete()
-                dict_data = {
-                    'status': 'success',
-                    'message': '已取消收藏！'
-                }
-                json_data = json.dumps(dict_data)
-                return HttpResponse(json_data, content_type='application/json')
+                status = 'success',
+                message = '已取消收藏！'
             else:
                 favorite = Favorite()
                 favorite.image = image
                 favorite.user = request.user
-                favorite.add_time = timezone.now()
                 favorite.save()
-                dict_data = {
-                    'status': 'success',
-                    'message': '添加收藏成功！'
-                }
-                json_data = json.dumps(dict_data)
-                return HttpResponse(json_data, content_type='application/json')
+                status = 'success',
+                message = '添加收藏成功！'
+        return JsonResponse({"status": status, "message": message})
 
 
-def RatingImage(request):
-    """
-    用户评分图片
-    """
+
+
+def rating_image(request):
     if request.method == 'POST':
         image_id = request.POST.get('image_id', 0)
         star = request.POST.get('star', 0)
+        star = float(star)
         if image_id == 0 or star == 0:
-            data = {'status': 'fail', 'message': '图片ID/用户评分错误！'}
-        else:
+            status = 'fail'
+            message = '传输数据失败'
+        elif star == float(-1):
+            status = 'success'
+            user = request.user
             image = Image.objects.get(pk=image_id)
-            rating = Rating.objects.get(user=request.user, image=image)
+            rating = Rating.objects.filter(user=user, image=image)
             if rating:
-                rating.star = star
-                rating.date_add = timezone.now()
-                rating.save()
+                rating.delete()
+                message = '取消评分成功！'
+            else:
+                message = '尚未评分！'
+        else:
+            user = request.user
+            image = Image.objects.get(pk=image_id)
+            rating = Rating.objects.filter(user=user, image=image)
+            if rating:
+                rating.update(star=star)
+                status = 'success'
                 message = '重新评分成功！'
             else:
                 rating = Rating()
-                rating.star = star
                 rating.user = request.user
-                rating.image = image
-                rating.date_add = timezone.now()
+                rating.image = Image.objects.get(pk=image_id)
+                rating.star = star
                 rating.save()
-                message = '评分成功！'
-            data = {'status': 'success', 'message': message, }
-        return JsonResponse(data)
+                status = 'success'
+                message = '添加评分成功！'
+        return JsonResponse({"status": status, "message": message})
+
+
+
 
 
 # 发送邮箱验证码的view:
-
-
 class SentMessage(LoginRequiredMixin, View):
     def post(self, request):
         from_user = request.POST.get('from_user_id', 0)
