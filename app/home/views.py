@@ -25,7 +25,13 @@ class IndexView(View):
         for item in carousel:
             carousel_images.append(item.image.url_thumb)
 
-        item = {'id': 1234, 'url': 'http://img.zcool.cn/community/0142135541fe180000019ae9b8cf86.jpg'}
+        item = {
+            'id': 1234,
+            'url': 'http://img.zcool.cn/community/0142135541fe180000019ae9b8cf86.jpg',
+            'name': 'qwe.jpg',
+            'width': 1024,
+            'height': 768,
+        }
         carousel_images = [item] * 3
         hot_images = [item] * 16
         recommend_images = [item] * 8

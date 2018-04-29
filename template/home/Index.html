@@ -6,6 +6,38 @@
     {% load static %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'home/index.css' %}">
+
+
+    <script>
+
+        var tmp_hot_image = null;
+
+        function view_hot_image() {
+            if (tmp_hot_image == null) {
+                var viewer = new Viewer(document.getElementById("hot-image-view"));
+                tmp_hot_image = viewer;
+                viewer.show();
+            }
+            else {
+                tmp_hot_image.show();
+            }
+        };
+
+        var tmp_recommend_image = null;
+
+        function view_recommend_image() {
+            if (tmp_recommend_image == null) {
+                var viewer = new Viewer(document.getElementById("recommend-image-view"));
+                tmp_recommend_image = viewer;
+                viewer.show();
+            }
+            else {
+                tmp_recommend_image.show();
+            }
+        };
+
+    </script>
+
 {% endblock %}
 
 
@@ -21,12 +53,13 @@
                 {% endif %}
             {% endfor %}
         </ol>
-
         <div class="carousel-inner">
             {% for image in carousel_images %}
                 {% if forloop.first %}
                     <div class="item active">
-                        <img class="d-block w-100" src="{{ image.url }}">
+                        <a href="{% url 'image:detail' 2 %}">
+                            <img class="d-block w-100" src="{{ image.url }}">
+                        </a>
                         <div class="carousel-caption">{{ image.url }}</div>
                     </div>
                 {% else %}
@@ -47,24 +80,54 @@
         </a>
     </div>
 
-    <h3>热门图片</h3>
+
+    <div style="width: 250px;height: 40px; margin:9px auto;">
+        <span class="btn btn-default"
+              style="float:left; vertical-align:middle;  height:38px; font-size: 20px;">热门图片</span>
+        <button class="btn btn-default" style="float:right; vertical-align:middle;  height:38px;"
+                onclick="view_hot_image()">一键浏览
+        </button>
+    </div>
+    <div style="clear:both;"></div>
 
     <div id="hot-image">
+        <ul id="hot-image-view" style="display: none">
+            {% for image in hot_images %}
+                <li><img src="{{ image.url }}" alt="{{ image.url }}"></li>
+            {% endfor %}
+        </ul>
+
         <div class="row">
             {% for image in hot_images %}
                 <div class="col-sm-6 col-md-3">
-{#                    <a href="{% url 'image:detail' image.id %}" class="thumbnail">#}
                     <a href="{% url 'image:detail' 2 %}" class="thumbnail">
                         <img src="{{ image.url }}" alt="{{ image.url }}">
                     </a>
+                    <div class="image-detail-info"
+                         style="height: 25px;width: 289px;  position: absolute;left: 20px;bottom: 20px;overflow: hidden;text-align: center">
+                        {{ image.name }} {{ image.width }}x{{ image.height }}
+                    </div>
                 </div>
             {% endfor %}
         </div>
     </div>
 
-    <h3>用户推荐的图片</h3>
+    <div style="width: 250px;height: 40px; margin:9px auto;" class="view-recommend">
+        <span class="btn btn-default"
+              style="float:left; vertical-align:middle;  height:38px; font-size: 20px;">推荐的图片</span>
+        <button class="btn btn-default" style="float:right; vertical-align:middle;  height:38px;"
+                onclick="view_recommend_image()">一键浏览
+        </button>
+    </div>
+    <div style="clear:both;"></div>
+
 
     <div id="recommend-image">
+        <ul id="recommend-image-view" style="display: none">
+            {% for image in recommend_images %}
+                <li><img src="{{ image.url }}" alt="{{ image.url }}"></li>
+            {% endfor %}
+        </ul>
         {% if recommend_images %}
             <div class="row">
                 {% for image in recommend_images %}
@@ -72,19 +135,22 @@
                         <a href="#" class="thumbnail">
                             <img src="{{ image.url }}" alt="{{ image.url }}">
                         </a>
+                        <div class="image-detail-info"
+                             style="height: 25px;width: 289px;  position: absolute;left: 20px;bottom: 20px;overflow: hidden;text-align: center">
+                            {{ image.name }} {{ image.width }}x{{ image.height }}
+                        </div>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
             登陆
         {% endif %}
-
     </div>
 
-    {#<script>#}
-    {#    var xlm_wid = '12688';#}
-    {#    var xlm_url = 'https://www.xianliao.me/';#}
-    {#</script>#}
-    {#<script type='text/javascript' charset='UTF-8' src='https://www.xianliao.me/embed.js'></script>#}
+    {#    <script>#}
+    {#        var xlm_wid = '12688';#}
+    {#        var xlm_url = 'https://www.xianliao.me/';#}
+    {#    </script>#}
+    {#    <script type='text/javascript' charset='UTF-8' src='https://www.xianliao.me/embed.js'></script>#}
 
 {% endblock %}

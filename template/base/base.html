@@ -14,16 +14,19 @@
         <script src="{% static 'lib/toastr/toastr.min.js' %}"></script>
         <link rel="stylesheet" href="{% static 'lib/toastr/toastr.min.css' %}">
 
-        <script src="{% static 'lib/viewer/viewer.min.js' %}"></script>
-        <link rel="stylesheet" href="{% static 'lib/viewer/viewer.min.css' %}">
+        <script src="{% static 'lib/viewerjs/viewer.min.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'lib/viewerjs/viewer.min.css' %}">
 
         <link rel="stylesheet" href="{% static 'base/base.css' %}">
 
         <style>
+            * {
+                border: 1px solid red;
+            }
+
             #main, #content, #foot {
                 width: 1300px;
                 margin: 0 auto;
-                border: 1px solid black;
             }
 
             #foot {

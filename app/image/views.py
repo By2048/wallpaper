@@ -7,9 +7,10 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.db.models import F, Q
 
 from image.models import Image, Tag, Category
-from user.models import Favorite
+from user.models import Favorite, Coin
 
 
 class DetailView(View):
@@ -18,18 +19,24 @@ class DetailView(View):
             data = {'message': '此图片不存在!'}
         else:
             image = Image.objects.get(pk=image_id)
-            favorite = Favorite.objects.filter(user=request.user, image=image)
-            if favorite:
-                is_favorite = 'True'
+            image.click += 1
+            image.save()
+            if request.user.is_authenticated:
+                favorite = Favorite.objects.filter(user=request.user, image=image)
+                coin = Coin.objects.filter(user=request.user, image=image)
+                is_favorite = 'True' if favorite else 'False'
+                is_coin = 'True' if coin else 'False'
             else:
                 is_favorite = 'False'
+                is_coin = 'False'
+
             data = {
                 'image_id': image_id,
                 'name': image.name if image.name else image.id,
                 'width': image.width,
                 'height': image.height,
                 'click': image.click,
-                'show_width': image.width if image.width < 1300 else 1300,
+                'show_width': image.width if image.width < 1300 else 1300 - 1,
                 'show_height': image.height if image.width < 1300 else int(1300 * image.height / image.width),
                 'description': image.description,
                 'url': image.url,
@@ -37,6 +44,7 @@ class DetailView(View):
                 'all_categorys': Category.objects.all(),
                 'categorys': image.categorys.all(),
                 'is_favorite': is_favorite,
+                'is_coin': is_coin,
             }
         return render(request, 'image/detail.html', data)
 

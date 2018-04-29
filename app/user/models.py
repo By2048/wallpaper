@@ -80,7 +80,6 @@ class UserProfile(AbstractUser):
         verbose_name_plural = verbose_name
 
 
-
 # 用户验证
 class UserAuthentication(models.Model):
     _types = (
@@ -101,20 +100,6 @@ class UserAuthentication(models.Model):
     class Meta:
         db_table = 'db_user_authentication'
         verbose_name = '用户验证'
-        verbose_name_plural = verbose_name
-
-
-class Favorite(models.Model):
-    user = models.ForeignKey(UserProfile, null=True, verbose_name='用户', on_delete=models.CASCADE)
-    image = models.ForeignKey('image.Image', null=True, verbose_name='图片', on_delete=models.CASCADE)
-    add_time = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
-
-    def __str__(self):
-        return "{0}    {1}".format(self.user.username, self.image.url)
-
-    class Meta:
-        db_table = 'db_favorite'
-        verbose_name = '用户收藏'
         verbose_name_plural = verbose_name
 
 
@@ -152,4 +137,42 @@ class BlackHouse(models.Model):
     class Meta:
         db_table = 'db_black_house'
         verbose_name = '小黑屋'
+        verbose_name_plural = verbose_name
+
+
+class SignIn(models.Model):
+    user = models.ForeignKey(UserProfile, verbose_name='用户', on_delete=models.CASCADE)
+    date_add = models.DateTimeField(default=timezone.now, verbose_name='签到时间')
+
+    class Meta:
+        db_table = 'db_sign_in'
+        verbose_name = '每日签到'
+        verbose_name_plural = verbose_name
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(UserProfile, null=True, verbose_name='用户', on_delete=models.CASCADE)
+    image = models.ForeignKey('image.Image', null=True, verbose_name='图片', on_delete=models.CASCADE)
+    add_time = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
+
+    def __str__(self):
+        return "{0}    {1}".format(self.user.username, self.image.url)
+
+    class Meta:
+        db_table = 'db_favorite'
+        verbose_name = '用户收藏'
+        verbose_name_plural = verbose_name
+
+
+class Coin(models.Model):
+    user = models.ForeignKey(UserProfile, null=True, related_name='coin_image',verbose_name='用户', on_delete=models.CASCADE)
+    image = models.ForeignKey('image.Image', null=True, verbose_name='图片', on_delete=models.CASCADE)
+    add_time = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
+
+    def __str__(self):
+        return "{0}    {1}".format(self.user.username, self.image.url)
+
+    class Meta:
+        db_table = 'db_coin'
+        verbose_name = '推荐投币'
         verbose_name_plural = verbose_name

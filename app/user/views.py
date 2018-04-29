@@ -1,6 +1,7 @@
 # coding=utf-8
 import json
 import logging
+import datetime
 
 from django.shortcuts import render
 from django.views.generic.base import View
@@ -13,11 +14,8 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from user.forms import RegisterForm
-from user.models import UserProfile
-from user.models import Favorite
-from user.models import Comment
-from image.models import Image
-from image.models import Rating
+from user.models import UserProfile, Favorite, Comment, SignIn, Coin
+from image.models import Image, Rating
 
 
 class RegisterView(View):
@@ -70,6 +68,37 @@ def add_favorite(request):
         return JsonResponse({"status": status, "message": message})
 
 
+def add_coin(request):
+    if request.method == 'POST':
+        image_id = request.POST.get('image_id', 0)
+        if image_id == 0:
+            status = 'fail'
+            message = '图片ID错误！'
+        else:
+            image = Image.objects.get(pk=image_id)
+            user = request.user
+            coin = Coin.objects.filter(user=request.user, image=image)
+
+            if coin:
+                coin.delete()
+                user.coin += 1
+                user.save()
+                status = 'success',
+                message = '已取消投币！'
+            else:
+                if user.coin < 1:
+                    status = 'fail',
+                    message = '硬币不足！'
+                else:
+                    user.coin -= 1
+                    user.save()
+                    coin = Coin()
+                    coin.image = image
+                    coin.user = request.user
+                    coin.save()
+                    status = 'success',
+                    message = '投币成功！'
+        return JsonResponse({"status": status, "message": message})
 
 
 def rating_image(request):
@@ -109,10 +138,6 @@ def rating_image(request):
         return JsonResponse({"status": status, "message": message})
 
 
-
-
-
-# 发送邮箱验证码的view:
 class SentMessage(LoginRequiredMixin, View):
     def post(self, request):
         from_user = request.POST.get('from_user_id', 0)
@@ -157,17 +182,26 @@ class Recharge(LoginRequiredMixin, View):
         return render(request, 'user/recharge.html', {'user': user, 'message': message})
 
 
-class SignIn(LoginRequiredMixin, View):
-    """
-    用户签到模块
-    """
+def sign_in(request):
+    """用户签到"""
 
-    def get(self, request):
+    if request.method == 'POST':
         user = request.user
+        now_date = datetime.datetime.now().date()
+        sign_in = SignIn.objects.filter(user=user, date_add__gte=now_date)
+
         if user.is_active == False:
-            data = {'status': 'fail', 'message': '用户未激活'}
+            status = 'fail'
+            message = '用户未激活'
+        elif sign_in:
+            status = 'fail'
+            message = '已经签到 签到时间为  ' + sign_in[0].date_add.strftime('%I:%M:%S %p')
         else:
             user.coin += 1
             user.save()
-            data = {'status': 'success', 'message': '签到成功！'}
-        return JsonResponse(data)
+            sign_in = SignIn()
+            sign_in.user = user
+            sign_in.save()
+            status = 'success'
+            message = '签到成功 签到时间为  ' + datetime.datetime.now().strftime('%I:%M:%S %p')
+        return JsonResponse({'status': status, 'message': message})

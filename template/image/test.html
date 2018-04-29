@@ -4,45 +4,21 @@
 
 {% block css_js %}
     {{ block.super }}
-
-
-    <script>
-        $(document).ready(function () {
-
-            $('.start-image').rating({
-                hoverOnClear: false,
-                theme: 'krajee-fa',
-                min: 0,
-                max: 5,
-                step: 0.1,
-                stars: 5,
-                language: 'zh'
-            });
-            $(".start-image").rating().on("rating:clear", function (event) {
-                toastr.info("Your rating is reset");
-                al("Your rating is reset");
-            }).on("rating:change", function (event, value, caption) {
-                toastr.info("You rated: " + value + " = " + $(caption).text());
-            });
-
-        });
-    </script>
-
 {% endblock %}
 
 
 {% block content %}
     <div class="docs-galley">
         <ul id="image">
-            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="错纳湖"></li>
-            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="青藏高原"></li>
-            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="大昭寺"></li>
-            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="布达拉宫1"></li>
-            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="布达拉宫2"></li>
-            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="布达拉宫3"></li>
-            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="拉萨河"></li>
-            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="纳木措1"></li>
-            <li><img data-original="{{ MEDIA_URL }}image/tibet-1.jpg" alt="纳木措2"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/6.jpg" alt="错纳湖"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/6.jpg" alt="青藏高原"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/6.jpg" alt="大昭寺"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/6.jpg" alt="布达拉宫1"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/6.jpg" alt="布达拉宫2"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/6.jpg" alt="布达拉宫3"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/6.jpg" alt="拉萨河"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/6.jpg" alt="纳木措1"></li>
+            <li><img data-original="{{ MEDIA_URL }}image/6.jpg" alt="纳木措2"></li>
 
         </ul>
     </div>
@@ -53,16 +29,18 @@
     <script>
 
         document.getElementById('btn1').onclick = function () {
+            var viewer = new Viewer(document.getElementById('image'), {
+                url: 'data-original',
+                navbar: false
+                {#viewed: function () {#}
+                {#    viewer.zoomTo(1);#}
+                {#    toastr.info('viewd....');#}
+                {#\}#}
+            });
             viewer.show();
         }
 
-        var viewer = new Viewer(document.getElementById('image'), {
-            url: 'data-original',
-            {#viewed: function () {#}
-            {#    viewer.zoomTo(1);#}
-            {#    toastr.info('viewd....');#}
-            {#\}#}
-        });
+
         {#var viewer = new Viewer(document.getElementById('image'), {#}
         {#    viewed: function () {#}
         {#        viewer.zoomTo(1);#}

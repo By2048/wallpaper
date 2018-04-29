@@ -177,27 +177,67 @@
                 {#toastr.info("你的评分为 " + value + " = " + $(caption).text());#}
             });
 
-            $(".favorite").click(function () {
-                $(this).toggleClass('btn-default btn-info');
-                $(".favorite-span").toggleClass('glyphicon-heart-empty glyphicon-heart');
 
-                var image_id ={{ image_id }};
-                $.ajax({
-                    type: "post",
-                    url: "{% url 'user:add_favorite' %}",
-                    data: {
-                        csrfmiddlewaretoken: '{{ csrf_token }}',
-                        "image_id": image_id,
-                    },
-                    success: function (data) {
-                        if (data.status == 'success') {
-                            toastr.info(data.message);
-                        } else {
-                            toastr.error(data.message);
+            $(".favorite").click(function () {
+                if ('{{ user.is_authenticated }}' == 'True') {
+                    var image_id ={{ image_id }};
+                    $.ajax({
+                        type: "post",
+                        url: "{% url 'user:add_favorite' %}",
+                        data: {
+                            csrfmiddlewaretoken: '{{ csrf_token }}',
+                            "image_id": image_id,
+                        },
+                        success: function (data) {
+                            if (data.status == 'success') {
+                                $(".favorite").toggleClass('btn-info btn-default');
+                                $(".favorite-span").toggleClass('glyphicon-heart glyphicon-heart-empty');
+                                toastr.info(data.message);
+                            } else {
+                                toastr.error(data.message);
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    toastr.error('请先登陆！');
+                }
             });
+
+
+            $(".coin").click(function () {
+                if ('{{ user.is_authenticated }}' == 'True') {
+                    var image_id ={{ image_id }};
+                    $.ajax({
+                        type: "post",
+                        url: "{% url 'user:add_coin' %}",
+                        data: {
+                            csrfmiddlewaretoken: '{{ csrf_token }}',
+                            "image_id": image_id,
+                        },
+                        success: function (data) {
+                            if (data.status == 'success') {
+                                $(".coin").toggleClass('btn-info btn-default');
+                                toastr.info(data.message);
+                            }
+                            else {
+                                toastr.error(data.message);
+                            }
+                        }
+                    });
+                } else {
+                    toastr.error('请先登陆！');
+                }
+            });
+
+
+            document.getElementById('image').onclick = function () {
+                var viewer = new Viewer(document.getElementById('image'), {
+                    navbar: false,
+                    title: false,
+                });
+                viewer.show();
+            };
+
 
         });
     </script>
@@ -257,21 +297,16 @@
 
 
     <div class="image-info">
-
         <ol class="breadcrumb">
             <li><a href="{% url "index" %}">Wallpaper</a></li>
             <li>图片详情</li>
             <li class="active">图片ID > {{ image_id }}</li>
         </ol>
-
-
         <div class="click-num">
             <button class="btn btn-default" type="button">
                 点击的次数 <span class="badge">{{ click }}</span>
             </button>
-
         </div>
-
 
         <div class="tags">
             <button class="btn btn-default" type="button">
@@ -337,7 +372,7 @@
     </div>
 
     <div class="image-view">
-        <img src="{{ MEDIA_URL }}image/7bd029fee26b3b582d7c34cccbed9184.jpg"
+        <img id="image" src="{{ MEDIA_URL }}image/7bd029fee26b3b582d7c34cccbed9184.jpg"
              alt="{{ MEDIA_URL }}"
              style="width: {{ show_width }}px;height: {{ show_height }}px;">
     </div>
@@ -346,6 +381,7 @@
         <span type="button" class="btn btn-default">图片名</span>
         <span type="button" class="btn btn-default">{{ name }}</span>
     </div>
+
     <div style="margin-top: 10px;margin-bottom: 10px">
         {% if description != None %}
             <textarea class="form-control" style="width: 1000px;margin: 0 auto; text-align: center" cols="1" rows="1">暂无描述</textarea>
@@ -363,13 +399,25 @@
             <input class="start-image kv-ltr-theme-fa-star rating-loading" value="0" dir="ltr" data-size="xs">
         </div>
         <div style="float: right;margin-right: 30px;">
-            {% if is_favorite == 'True' %}
+            {% if is_favorite == 'False' %}
                 <button class="btn btn-default favorite">
                     <span class="glyphicon glyphicon-heart-empty favorite-span" aria-hidden="true"></span>
                 </button>
             {% else %}
                 <button class="btn btn-info favorite">
                     <span class="glyphicon glyphicon-heart favorite-span" aria-hidden="true"></span>
+                </button>
+            {% endif %}
+        </div>
+        <div style="float: right;margin-right: 10px;">
+
+            {% if is_coin == 'False' %}
+                <button class="btn btn-default coin">
+                    <span class="glyphicon glyphicon-thumbs-up coin-span" aria-hidden="true"></span>
+                </button>
+            {% else %}
+                <button class="btn btn-info coin">
+                    <span class="glyphicon glyphicon-thumbs-up coin-span" aria-hidden="true"></span>
                 </button>
             {% endif %}
         </div>
