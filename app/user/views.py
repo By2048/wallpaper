@@ -48,6 +48,7 @@ class RegisterView(View):
 def add_favorite(request):
     if request.method == 'POST':
         image_id = request.POST.get('image_id', 0)
+        image_id = int(image_id)
         if image_id == 0:
             status = 'fail'
             message = '图片ID错误！'

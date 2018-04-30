@@ -5,7 +5,6 @@
 {% block css_js %}
     {% load static %}
     {{ block.super }}
-    {#todo bug fix#}
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link href="{% static 'lib/bootstrap-star-rating/css/star-rating.min.css' %}" media="all" rel="stylesheet"
           type="text/css"/>
@@ -125,60 +124,45 @@
                 max: 5,
                 step: 0.1,
                 stars: 5,
-                language: 'zh'
+                language: 'zh',
             });
+
+            function start_image(star) {
+                var image_id ={{ image_id }};
+                if ('{{ user.is_authenticated }}' == 'True') {
+                    $.ajax({
+                        type: "post",
+                        url: "{% url 'user:rating_image' %}",
+                        data: {
+                            csrfmiddlewaretoken: '{{ csrf_token }}',
+                            "image_id": image_id,
+                            "star": parseFloat(star),
+                        },
+                        success: function (data) {
+                            if (data.status == 'success') {
+                                toastr.info(data.message);
+                            } else {
+                                toastr.error(data.message);
+                            }
+                        }
+                    });
+
+                } else {
+                    toastr.error('请先登陆！');
+                }
+            };
+
 
             $(".start-image").rating().on("rating:clear", function (event) {
-                var image_id ={{ image_id }};
-                if ('{{ user.is_authenticated }}' == 'True') {
-                    $.ajax({
-                        type: "post",
-                        url: "{% url 'user:rating_image' %}",
-                        data: {
-                            csrfmiddlewaretoken: '{{ csrf_token }}',
-                            "image_id": image_id,
-                            "star": parseFloat(-1),
-                        },
-                        success: function (data) {
-                            if (data.status == 'success') {
-                                toastr.info(data.message);
-                            } else {
-                                toastr.error(data.message);
-                            }
-                        }
-                    });
-
-                } else {
-                    toastr.error('请先登陆！');
-                }
+                start_image(-1);
             }).on("rating:change", function (event, value, caption) {
+                start_image(value);
                 var image_id ={{ image_id }};
-                if ('{{ user.is_authenticated }}' == 'True') {
-                    $.ajax({
-                        type: "post",
-                        url: "{% url 'user:rating_image' %}",
-                        data: {
-                            csrfmiddlewaretoken: '{{ csrf_token }}',
-                            "image_id": image_id,
-                            "star": parseFloat(value),
-                        },
-                        success: function (data) {
-                            if (data.status == 'success') {
-                                toastr.info(data.message);
-                            } else {
-                                toastr.error(data.message);
-                            }
-                        }
-                    });
-
-                } else {
-                    toastr.error('请先登陆！');
-                }
-                {#toastr.info("你的评分为 " + value + " = " + $(caption).text());#}
+                {#toastr.info("你的评分为 " + value + " = " + $(caption1).text());#}
             });
 
 
-            $(".favorite").click(function () {
+            function add_favirote() {
                 if ('{{ user.is_authenticated }}' == 'True') {
                     var image_id ={{ image_id }};
                     $.ajax({
@@ -201,10 +185,10 @@
                 } else {
                     toastr.error('请先登陆！');
                 }
-            });
+            };
 
 
-            $(".coin").click(function () {
+            function add_coin() {
                 if ('{{ user.is_authenticated }}' == 'True') {
                     var image_id ={{ image_id }};
                     $.ajax({
@@ -227,6 +211,65 @@
                 } else {
                     toastr.error('请先登陆！');
                 }
+            };
+
+
+            $(".favorite").click(function () {
+                add_favirote();
+            });
+
+
+            $(".coin").click(function () {
+                add_coin();
+            });
+
+            $(document).keydown(function (event) {
+                {#toastr.info(event.keyCode);#}
+                if (event.keyCode == 76) { // L love
+                    add_favirote();
+                }
+                if (event.keyCode == 80) { // P praise
+                    add_coin();
+                }
+                var star = [90, 88, 67, 86, 66].indexOf(event.keyCode) + 1
+                if (star) {
+                    start_image(star);
+                    $(".start-image").rating('update', star);
+                }
+
+                if (event.keyCode == 78) { // N
+                    var cur_star = $(".start-image").rating().val();
+                    cur_star = parseFloat(cur_star);
+                    if (cur_star >= 0.2) {
+                        cur_star = cur_star - 0.1;
+                        cur_star = cur_star.toFixed(1);
+                        $(".start-image").rating('update', cur_star);
+                        start_image(cur_star);
+                    } else {
+                        toastr.info('最小评分为0.1 ！');
+                    }
+
+                }
+
+                if (event.keyCode == 77) { // M
+                    var cur_star = $(".start-image").rating().val();
+                    cur_star = parseFloat(cur_star);
+                    if (cur_star <= 4.9) {
+                        cur_star = cur_star + 0.1;
+                        cur_star = cur_star.toFixed(1);
+                        $(".start-image").rating('update', cur_star);
+                        start_image(cur_star);
+                    } else {
+                        toastr.info('最大评分为5 ！');
+                    }
+
+                }
+
+
+                {##}
+                {#"3.5"  78n 77m#}
+
+
             });
 
 
@@ -234,6 +277,22 @@
                 var viewer = new Viewer(document.getElementById('image'), {
                     navbar: false,
                     title: false,
+                    toolbar: {
+                        zoomIn: 1,
+                        zoomOut: 1,
+                        oneToOne: 1,
+                        reset: 1,
+                        prev: 0,
+                        play: {
+                            show: 1,
+                            size: 'large',
+                        },
+                        next: 0,
+                        rotateLeft: 1,
+                        rotateRight: 1,
+                        flipHorizontal: 1,
+                        flipVertical: 1,
+                    }
                 });
                 viewer.show();
             };

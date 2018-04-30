@@ -102,8 +102,3 @@ def add_category(request):
 
         return JsonResponse({"status": status, "message": message})
 
-
-def test_view(request):
-    images = ['']
-    data = {'images': images}
-    return render(request, 'image/test.html', data)

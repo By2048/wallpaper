@@ -10,31 +10,65 @@
 
     <script>
 
-        var tmp_hot_image = null;
 
-        function view_hot_image() {
-            if (tmp_hot_image == null) {
-                var viewer = new Viewer(document.getElementById("hot-image-view"));
-                tmp_hot_image = viewer;
-                viewer.show();
+        var hot_image = null;
+        var recommend_image = null;
+
+        function view_image(element_id) {
+            if (element_id == "hot-image-view") {
+                if (hot_image == null) {
+                    var viewer = new Viewer(document.getElementById(element_id));
+                    hot_image = viewer;
+                    viewer.show();
+                } else {
+                    hot_image.show();
+                }
             }
-            else {
-                tmp_hot_image.show();
+            if (element_id == "recommend-image-view") {
+                if (recommend_image == null) {
+                    var viewer = new Viewer(document.getElementById(element_id));
+                    recommend_image = viewer;
+                    viewer.show();
+                } else {
+                    recommend_image.show();
+                }
             }
         };
 
-        var tmp_recommend_image = null;
 
-        function view_recommend_image() {
-            if (tmp_recommend_image == null) {
-                var viewer = new Viewer(document.getElementById("recommend-image-view"));
-                tmp_recommend_image = viewer;
-                viewer.show();
+        $(document).keydown(function (event) {
+            {#toastr.info(event.keyCode);#}
+            if (event.keyCode == 76) {
+                {#toastr.info('L love');#}
+                var image_id = $(".viewer-move").attr("alt").split(' ')[0];
+                if ('{{ user.is_authenticated }}' == 'True') {
+                    $.ajax({
+                        type: "post",
+                        url: "{% url 'user:add_favorite' %}",
+                        data: {
+                            csrfmiddlewaretoken: '{{ csrf_token }}',
+                            "image_id": image_id,
+                            "image_id": 2,
+                        },
+                        success: function (data) {
+                            if (data.status == 'success') {
+                                toastr.info(data.message);
+                            } else {
+                                toastr.error(data.message);
+                            }
+                        }
+                    });
+                } else {
+                    toastr.error('请先登陆！');
+                }
             }
-            else {
-                tmp_recommend_image.show();
+            if (event.keyCode == 68) {
+                {#toastr.info('D detail');#}
+                var image_id = $(".viewer-move").attr("alt").split(' ')[0];
+                window.location.href = "{% url 'image:detail' 2 %}";
             }
-        };
+        });
+
 
     </script>
 
@@ -85,7 +119,7 @@
         <span class="btn btn-default"
               style="float:left; vertical-align:middle;  height:38px; font-size: 20px;">热门图片</span>
         <button class="btn btn-default" style="float:right; vertical-align:middle;  height:38px;"
-                onclick="view_hot_image()">一键浏览
+                onclick="view_image('hot-image-view')">一键浏览
         </button>
     </div>
     <div style="clear:both;"></div>
@@ -93,7 +127,7 @@
     <div id="hot-image">
         <ul id="hot-image-view" style="display: none">
             {% for image in hot_images %}
-                <li><img src="{{ image.url }}" alt="{{ image.url }}"></li>
+                <li><img src="{{ image.url }}" alt="{{ image.id }} {{ image.url }}"></li>
             {% endfor %}
         </ul>
 
@@ -104,7 +138,7 @@
                         <img src="{{ image.url }}" alt="{{ image.url }}">
                     </a>
                     <div class="image-detail-info"
-                         style="height: 25px;width: 289px;  position: absolute;left: 20px;bottom: 20px;overflow: hidden;text-align: center">
+                         style="height: 25px;width: 289px;  position: absolute;left: 20px;bottom: 20px;overflow: hidden; text-align: center">
                         {{ image.name }} {{ image.width }}x{{ image.height }}
                     </div>
                 </div>
@@ -116,7 +150,7 @@
         <span class="btn btn-default"
               style="float:left; vertical-align:middle;  height:38px; font-size: 20px;">推荐的图片</span>
         <button class="btn btn-default" style="float:right; vertical-align:middle;  height:38px;"
-                onclick="view_recommend_image()">一键浏览
+                onclick="view_image('recommend-image-view')">一键浏览
         </button>
     </div>
     <div style="clear:both;"></div>
