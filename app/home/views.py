@@ -43,36 +43,78 @@ class IndexView(View):
         })
 
 
-class CategoryView(View):
-    """分类视图
-    根据分类的ID来显示分类下的图片
-    """
+def hot(request, category_id=0):
+    all_category = Category.objects.all()
+    page_categorys = Paginator(all_category, 15, request=request)
+    category_page = request.GET.get('category_page', 0)
+    categorys = page_categorys.page(category_page)
 
-    def get(self, request):
-        all_category = Category.objects.all()
-        category_id = request.GET.get('category_id', 1)
-        category_images = Image.objects.filter(category__id=category_id)[:20]
-        return render(request, 'home/category.html', context={
-            'all_category': all_category,
-            'category_image': category_images
-        })
+    if category_id == 0:
+        all_images = Image.objects.all().order_by('click')
+    else:
+        all_images = Image.objects.filter(categorys__id=category_id).order_by('click')
+    page_images = Paginator(all_images, 20, request=request)
+    image_page = request.GET.get('image_page', 1)
+    images = page_images.page(image_page)
+
+    return render(request, 'home/hot.html', context={
+        'category_id':category_id,
+        'image_page': image_page,
+        'category_page': category_page,
+        'categorys': categorys,
+        'images': images
+    })
 
 
-class TagView(View):
-    def get(self, request):
-        all_tag = Tag.objects.all()
+def category(request, category_id=1):
+    all_category = Category.objects.all()
+    page_categorys = Paginator(all_category, 15, request=request)
+    category_page = request.GET.get('category_page', 1)
+    categorys = page_categorys.page(category_page)
 
-        try:
-            page = request.GET.get('page', 1)
-        except PageNotAnInteger:
-            page = 1
+    all_images = Image.objects.filter(categorys__id=category_id)
+    page_images = Paginator(all_images, 20, request=request)
+    image_page = request.GET.get('image_page', 1)
+    images = page_images.page(image_page)
 
-        p = Paginator(all_tag, 10, request=request)
+    return render(request, 'home/category.html', {
+        'category_id':category_id,
+        'image_page': image_page,
+        'category_page': category_page,
+        'categorys': categorys,
+        'images': images
+    })
 
-        tags = p.page(page)
-        return render(request, 'home/tag.html', context={
-            'tags': tags
-        })
+
+def tag(request, tag_id=1):
+    all_tag = Tag.objects.all()
+
+    page_tags = Paginator(all_tag, 15, request=request)
+    tag_page = request.GET.get('tag_page', 1)
+    tags = page_tags.page(tag_page)
+
+    all_images = Image.objects.filter(tags__id=tag_id)
+    page_images = Paginator(all_images, 20, request=request)
+    image_page = request.GET.get('image_page', 1)
+    images = page_images.page(image_page)
+
+    return render(request, 'home/tag.html', {
+        'tag_page': tag_page,
+        'image_page': image_page,
+        'tags': tags,
+        'images': images,
+    })
+
+
+def range(request):
+    item = {
+        'small': 'http://photopile-js.com/demo/images/thumbs/22.jpg',
+        'big': 'http://photopile-js.com/demo/images/fullsize/08.jpg',
+        'width': '84',
+        'height': '60',
+    }
+    images = [item] * (168 - 35)
+    return render(request, 'home/range.html', {'images': images})
 
 
 class HotView(View):

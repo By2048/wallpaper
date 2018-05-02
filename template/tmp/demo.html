@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.bootcss.com/jquery/1.12.3/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            var grid = document.querySelector('.grid');
+            var iso = new Isotope(grid, {
+                // options...
+                itemSelector: '.grid-item',
+                masonry: {
+                    columnWidth: 200
+                }
+            });
+        });
+
+    </script>
+</head>
+<body>
+<div class="row">
+
+    <div style="width: 1300px;margin: 0 auto">
+        <div class="row grid">
+            {% for item in images %}
+                <div class="col-sm-6 col-md-3 grid-item">
+                    <a href="#" class="thumbnail">
+                        <img src="{{ MEDIA_URL }}image/6.jpg" alt="img_name_info">
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

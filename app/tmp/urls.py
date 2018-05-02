@@ -1,11 +1,11 @@
 # coding=utf-8
 from django.urls import path
 
-from tmp.views import upload_files,range_image
+from tmp.views import upload_files, demo
 
 app_name = 'tmp'
 
 urlpatterns = [
     path('upload_files/', upload_files, name='upload_files'),
-    path('range_image/', range_image, name='range_image'),
+    path('demo/', demo, name='demos'),
 ]

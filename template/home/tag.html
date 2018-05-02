@@ -1,56 +1,212 @@
 {% extends 'base/base.html' %}
 
+{% block css_js %}
+    {% load static %}
+    {{ block.super }}
+
+    <style>
+        .tags, .tags-page {
+            width: 198px;
+            float: left;
+        }
+
+        .images {
+            width: 1100px;
+            float: right;
+        }
+
+        .tags-page ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        .tags-page li {
+            float: left;
+            list-style: none;
+        }
+    </style>
+{% endblock %}
+
 {% block title %}All Category{% endblock %}
 
 {% block content %}
 
-    {% for tag in tags.object_list %}
-        {{ tag.name }} </br>
-        {{ tag.count }}
-    {% endfor %}
-
-    <div class="pagination">
-    <span class="step-links">
-        {% if tags.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ tags.previous_page_number }}">previous</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ tags.number }} of {{ tags.paginator.num_pages }}.
-        </span>
-
-        {% if tags.has_next %}
-            <a href="?page={{ tags.next_number }}">next</a>
-            <a href="?page={{ tags.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
+    <div class="tags">
+        <div class="tags-item">
+            <ul class="list-group">
+                {% for item in tags.object_list %}
+                    <li class="list-group-item"><a href="#">{{ item.name }} {{ item.count }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="tags-page" style="height: 30px;">
+            <ul>
+                {% for page in tags.pages %}
+                    {% if page %}
+                        {% ifequal page tags.number %}
+                            <li><a href="?tag_page={{ page }}">{{ page }}</a></li>
+                        {% else %}
+                            <li><a href="?tag_page={{ page }}">{{ page }}</a></li>
+                        {% endifequal %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 
-    <ul class="pagelist">
-        <a href="?page=1">&laquo; first</a>
-        {% if tags.has_previous %}
-            <li class="long"><a href="?{{ tags.previous_page_number.querystring }}">上一页</a></li>
-        {% endif %}
 
-        {% for page in tags.pages %}
-            {% if page %}
-                {% ifequal page tags.number %}
-                    <li class="activate"><a href="?{{ page.querystring }}">{{ page }}</a></li>
-                {% else %}
-                    <li><a href="?{{ page.querystring }}">{{ page }}</a></li>
-                {% endifequal %}
-            {% endif %}
-        {% endfor %}
 
-        {% if tags.has_next %}
-            <li><a href="?{{ tags.next_number.querystring }}">下一页</a></li>
-        {% endif %}
-        <a href="?page={{ tags.paginator.num_pages }}">last &raquo;</a>
-    </ul>
+
+    <div class="images">
+
+        <div class="row">
+            {% for item in images.object_list %}
+                <div class="col-sm-6 col-md-3">
+                    <a href="{% url 'image:detail' 2 %}" class="thumbnail">
+                        {#<img src="{{ item.url_thumb }}" alt="{{ item.url }}">#}
+                        <img src="{{ MEDIA_URL }}image/6.jpg" alt="">
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+
+
+        <div style="margin-left: 60px; ">
+            <nav>
+                <ul class="pagination">
+                    {% if images.has_previous %}
+                        <li class="pager-prev">
+                            <a href="?tag_page={{ tag_page }}&image_page={{ image_page|add:-1 }}">上一页</a>
+                        </li>
+                    {% else %}
+                        <li class="pager-prev disabled">
+                            <a href="#">上一页</a>
+                        </li>
+                    {% endif %}
+
+                    {% for page in images.pages %}
+                        {% if page %}
+                            {% ifequal page images.number %}
+                                <li class="active">
+                                    <a href="?tag_page={{ tag_page }}&image_page={{ page }}">{{ page }}</a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <a href="?tag_page={{ tag_page }}&image_page={{ page }}">{{ page }}</a>
+                                </li>
+                            {% endifequal %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if images.has_next %}
+                        <li class="pager-prev">
+                            <a href="?tag_page={{ tag_page }}&image_page={{ image_page|add:1 }}">下一页</a>
+                        </li>
+                    {% else %}
+                        <li class="pager-prev disabled">
+                            <a href="#">下一页</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div style="clear: both;"></div>
 
 {% endblock %}
 
 
 
 
+{##}
+{##}
+{#{% block content %}#}
+{##}
+{#    <div class="tags">#}
+{#        <ul class="list-group">#}
+{#            {% for item in categorys.object_list %}#}
+{#                <li class="list-group-item"><a href="#">{{ item.name }}</a></li>#}
+{#            {% endfor %}#}
+{#        </ul>#}
+{#        <div style="margin-left: 37px ;">#}
+{#            <navs>#}
+{#                <ul class="pagination">#}
+{#                    {% for page in categorys.pages %}#}
+{#                        {% if page %}#}
+{#                            {% ifequal page categorys.number %}#}
+{#                                <li class="active"><a href="?category_page={{ page }}">{{ page }}</a></li>#}
+{#                            {% else %}#}
+{#                                <li><a href="?category_page={{ page }}">{{ page }}</a></li>#}
+{#                            {% endifequal %}#}
+{#                        {% endif %}#}
+{#                    {% endfor %}#}
+{#                </ul>#}
+{#            </navs>#}
+{#        </div>#}
+{#    </div>#}
+{##}
+{##}
+{#    <div class="images">#}
+{##}
+{#        <div class="row">#}
+{#            {% for item in images.object_list %}#}
+{#                <div class="col-sm-6 col-md-3">#}
+{#                    <a href="{% url 'image:detail' 2 %}" class="thumbnail">#}
+{#<img src="{{ item.url_thumb }}" alt="{{ item.url }}">#}
+{#                        <img src="{{ MEDIA_URL }}image/6.jpg" alt="">#}
+{#                    </a>#}
+{#                </div>#}
+{#            {% endfor %}#}
+{#        </div>#}
+{##}
+{##}
+{#        <div style="margin-left: 60px; ">#}
+{#            <navs>#}
+{#                <ul class="pagination">#}
+{#                    {% if images.has_previous %}#}
+{#                        <li class="pager-prev">#}
+{#                            <a href="?category_page={{ category_page }}&image_page={{ image_page|add:-1 }}">上一页</a>#}
+{#                        </li>#}
+{#                    {% else %}#}
+{#                        <li class="pager-prev disabled">#}
+{#                            <a href="#">上一页</a>#}
+{#                        </li>#}
+{#                    {% endif %}#}
+{##}
+{#                    {% for page in images.pages %}#}
+{#                        {% if page %}#}
+{#                            {% ifequal page images.number %}#}
+{#                                <li class="active">#}
+{#                                    <a href="?category_page={{ category_page }}&image_page={{ page }}">{{ page }}</a>#}
+{#                                </li>#}
+{#                            {% else %}#}
+{#                                <li>#}
+{#                                    <a href="?category_page={{ category_page }}&image_page={{ page }}">{{ page }}</a>#}
+{#                                </li>#}
+{#                            {% endifequal %}#}
+{#                        {% endif %}#}
+{#                    {% endfor %}#}
+{##}
+{#                    {% if images.has_next %}#}
+{#                        <li class="pager-prev">#}
+{#                            <a href="?category_page={{ category_page }}&image_page={{ image_page|add:1 }}">下一页</a>#}
+{#                        </li>#}
+{#                    {% else %}#}
+{#                        <li class="pager-prev disabled">#}
+{#                            <a href="#">下一页</a>#}
+{#                        </li>#}
+{#                    {% endif %}#}
+{#                </ul>#}
+{#            </navs>#}
+{#        </div>#}
+{##}
+{##}
+{#    </div>#}
+{##}
+{##}
+{#    <div style="clear: both;"></div>#}
+{##}
+{##}
+{#{% endblock %}#}
+{##}

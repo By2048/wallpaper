@@ -1,7 +1,125 @@
 {% extends 'base/base.html' %}
 
-{% block title %}Category{% endblock %}
+{% block title %}热门图片{% endblock %}
+
+
+{% block css_js %}
+    {% load static %}
+    {{ block.super }}
+
+    <style>
+        .categorys {
+            width: 198px;
+            float: left;
+        }
+
+        .images {
+            width: 1100px;
+            float: right;
+        }
+
+    </style>
+
+{% endblock %}
+
+
 
 {% block content %}
+
+    <div class="categorys">
+        <ul class="list-group">
+            {% for item in categorys.object_list %}
+                <li class="list-group-item">
+                    {% ifequal category_page 0 %}
+                        <a href="{% url 'home:category' item.id %}">{{ item.name }}</a>
+                    {% else %}
+                        <a href="{% url 'home:category' item.id %}?category_page={{ category_page }}">{{ item.name }}</a>
+                    {% endifequal %}
+
+                </li>
+            {% endfor %}
+        </ul>
+        <div style="margin-left: 37px ;">
+            <nav>
+                <ul class="pagination">
+                    {% for page in categorys.pages %}
+                        {% if page %}
+                            {% ifequal page categorys.number %}
+                                <li class="active">
+                                    <a href="{% url 'home:category' category_id %}?category_page={{ page }}">{{ page }}</a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <a href="{% url 'home:category' category_id %}?category_page={{ page }}">{{ page }}</a>
+                                </li>
+                            {% endifequal %}
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+
+    <div class="images">
+
+        <div class="row">
+            {% for item in images.object_list %}
+                <div class="col-sm-6 col-md-3">
+                    <a href="{% url 'image:detail' 2 %}" class="thumbnail">
+                        {#<img src="{{ item.url_thumb }}" alt="{{ item.url }}">#}
+                        <img src="{{ MEDIA_URL }}image/6.jpg" alt="">
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+
+
+        <div style="margin-left: 60px; ">
+            <nav>
+                <ul class="pagination">
+                    {% if images.has_previous %}
+                        <li class="pager-prev">
+                            <a href="{% url 'home:category' category_id %}?category_page={{ category_page }}&image_page={{ image_page|add:-1 }}">上一页</a>
+                        </li>
+                    {% else %}
+                        <li class="pager-prev disabled">
+                            <a href="#">上一页</a>
+                        </li>
+                    {% endif %}
+
+                    {% for page in images.pages %}
+                        {% if page %}
+                            {% ifequal page images.number %}
+                                <li class="active">
+                                    <a href="{% url 'home:category' category_id %}?category_page={{ category_page }}&image_page={{ page }}">{{ page }}</a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <a href="{% url 'home:category' category_id %}?category_page={{ category_page }}&image_page={{ page }}">{{ page }}</a>
+                                </li>
+                            {% endifequal %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if images.has_next %}
+                        <li class="pager-prev">
+                            <a href="{% url 'home:category' category_id %}?category_page={{ category_page }}&image_page={{ image_page|add:1 }}">下一页</a>
+                        </li>
+                    {% else %}
+                        <li class="pager-prev disabled">
+                            <a href="#">下一页</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+
+
+    </div>
+
+
+    <div style="clear: both;"></div>
+
 
 {% endblock %}
