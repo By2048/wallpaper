@@ -54,6 +54,7 @@ class Image(models.Model):
     url_thumb = models.URLField(max_length=500, verbose_name='缩略图片链接')
     categorys = models.ManyToManyField(Category, verbose_name='图片分类')
     tags = models.ManyToManyField(Tag, verbose_name='图片标签')
+    size = models.IntegerField(default=0, null=True, blank=True, verbose_name='图片大小')
     width = models.IntegerField(verbose_name='图片宽度')
     height = models.IntegerField(verbose_name='图片高度')
     type = models.CharField(max_length=10, choices=_type, verbose_name='图片格式')
@@ -101,13 +102,13 @@ class Carousel(models.Model):
         return "{0}   {1}   {2}".format(self.index, self.image.name, self.image.url_thumb)
 
     class Meta:
-        db_table = 'db_carousel'
+        db_table = 'db_carousel_image'
         verbose_name = '轮播图'
         verbose_name_plural = verbose_name
 
 
 class ImageScore(models.Model):
-    image = models.OneToOneField(Image, verbose_name='图片', on_delete=models.DO_NOTHING)
+    image = models.OneToOneField(Image, verbose_name='图片', on_delete=models.CASCADE)
     average_stars = models.FloatField(verbose_name='图片的平均得分')
     date_update = models.DateTimeField(default=timezone.now, verbose_name='更新时间')
 
@@ -118,16 +119,8 @@ class ImageScore(models.Model):
 
 
 class Rating(models.Model):
-    _star = (
-        (1, '1 星'),
-        (2, '2 星'),
-        (3, '3 星'),
-        (4, '4 星'),
-        (5, '5 星'),
-    )
     user = models.ForeignKey(UserProfile, verbose_name='评价的用户', on_delete=models.DO_NOTHING)
-    image = models.ForeignKey(Image, verbose_name='评价的图片', on_delete=models.DO_NOTHING)
-    # star = models.IntegerField(choices=_star, verbose_name='得分')
+    image = models.ForeignKey(Image, verbose_name='评价的图片', on_delete=models.CASCADE)
     star = models.FloatField(verbose_name='得分')
     date_add = models.DateTimeField(default=timezone.now, verbose_name='评分时间')
 

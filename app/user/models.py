@@ -107,7 +107,7 @@ class Message(models.Model):
     from_user = models.ForeignKey(UserProfile, related_name='from_user', verbose_name='发送的用户', on_delete=models.CASCADE)
     to_user = models.ForeignKey(UserProfile, related_name='to_user', verbose_name='接受的用户', on_delete=models.CASCADE)
     message = models.CharField(max_length=1000, verbose_name='消息内容')
-    is_read = models.BooleanField(default=False, verbose_name='时候读取')
+    is_read = models.BooleanField(default=False, verbose_name='是否读取')
     date_send = models.DateTimeField(default=timezone.now, verbose_name='消息发送时间')
 
     class Meta:
@@ -116,16 +116,16 @@ class Message(models.Model):
         verbose_name_plural = verbose_name
 
 
-class Comment(models.Model):
-    image = models.ForeignKey('image.Image', null=True, verbose_name='图片', on_delete=models.CASCADE)
-    user = models.ForeignKey(UserProfile, verbose_name='用户', on_delete=models.CASCADE)
-    comment = models.CharField(max_length=1000, verbose_name='评论内容')
-    date_add = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
-
-    class Meta:
-        db_table = 'db_comment'
-        verbose_name = '用户评论'
-        verbose_name_plural = verbose_name
+# class Comment(models.Model):
+#     image = models.ForeignKey('image.Image', null=True, verbose_name='图片', on_delete=models.CASCADE)
+#     user = models.ForeignKey(UserProfile, verbose_name='用户', on_delete=models.CASCADE)
+#     comment = models.CharField(max_length=1000, verbose_name='评论内容')
+#     date_add = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
+#
+#     class Meta:
+#         db_table = 'db_comment'
+#         verbose_name = '用户评论'
+#         verbose_name_plural = verbose_name
 
 
 class BlackHouse(models.Model):
@@ -153,7 +153,7 @@ class SignIn(models.Model):
 class Favorite(models.Model):
     user = models.ForeignKey(UserProfile, null=True, verbose_name='用户', on_delete=models.CASCADE)
     image = models.ForeignKey('image.Image', null=True, verbose_name='图片', on_delete=models.CASCADE)
-    add_time = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
+    date_add = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
 
     def __str__(self):
         return "{0}    {1}".format(self.user.username, self.image.url)
@@ -165,9 +165,10 @@ class Favorite(models.Model):
 
 
 class Coin(models.Model):
-    user = models.ForeignKey(UserProfile, null=True, related_name='coin_image',verbose_name='用户', on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, null=True, related_name='coin_image', verbose_name='用户',
+                             on_delete=models.CASCADE)
     image = models.ForeignKey('image.Image', null=True, verbose_name='图片', on_delete=models.CASCADE)
-    add_time = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
+    date_add = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
 
     def __str__(self):
         return "{0}    {1}".format(self.user.username, self.image.url)

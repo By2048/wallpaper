@@ -9,7 +9,7 @@
 
     <style>
         .categorys {
-            width: 198px;
+            width: 170px;
             float: left;
         }
 
@@ -23,14 +23,13 @@
 {% endblock %}
 
 
-
 {% block content %}
 
     <div class="categorys">
         <ul class="list-group">
             {% for item in categorys.object_list %}
                 <li class="list-group-item">
-                    {% ifequal category_page 0 %}
+                    {% ifequal category_page 1 %}
                         <a href="{% url 'home:category' item.id %}">{{ item.name }}</a>
                     {% else %}
                         <a href="{% url 'home:category' item.id %}?category_page={{ category_page }}">{{ item.name }}</a>
@@ -65,17 +64,17 @@
 
         <div class="row">
             {% for item in images.object_list %}
-                <div class="col-sm-6 col-md-3">
+                <div style="float: left; width: 282px;height: 175px; margin-left: 0px; padding: 0px">
                     <a href="{% url 'image:detail' 2 %}" class="thumbnail">
-                        {#<img src="{{ item.url_thumb }}" alt="{{ item.url }}">#}
-                        <img src="{{ MEDIA_URL }}image/6.jpg" alt="">
+                        <img src="{{ item.url_thumb }}" alt="{{ item.url }}">
+                        {#<img src="{{ MEDIA_URL }}image/6.jpg" alt="">#}
                     </a>
                 </div>
             {% endfor %}
         </div>
 
 
-        <div style="margin-left: 60px; ">
+        <div style="margin-left: 60px; margin-top: 40px;">
             <nav>
                 <ul class="pagination">
                     {% if images.has_previous %}

@@ -2,27 +2,18 @@
 
 {% block title %}随机图片浏览 {% endblock %}
 
-{% load static %}
-
-
 {% block css_js %}
+    {% load static %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'lib/photopile/photopile.css' %}">
-
-
     <style>
         .photopile-wrapper {
             width: 1200px;
             margin: 60px auto;
 
         }
-
-        {#ul.photopile li a img {#}
-        {#    border: 0 none;#}
-        {#\}#}
     </style>
 {% endblock %}
-
 
 
 {% block content %}
@@ -30,18 +21,17 @@
         <ul class="photopile">
             {% for item in images %}
                 <li>
-                    <a href="{{ item.big }}">
-                        <img src="{{ item.small }}" alt="" width="{{ item.width }}" height="{{ item.height }}"/>
+                    <a href="{{ item.url }}">
+                        <img src="{{ item.url_thumb }}" alt="{{ item.url }}"
+                             style="width:{{ item.width }}px; height:{{ item.height }}px"/>
                     </a>
                 </li>
             {% endfor %}
         </ul>
     </div>
-
     <script src="{% static 'lib/photopile/jquery-1.8.3.min.js' %}"></script>
     <script src="{% static 'lib/photopile/jquery-ui.min.js' %}"></script>
     <script src="{% static 'lib/photopile/photopile.js' %}"></script>
-
 {% endblock %}
 
 

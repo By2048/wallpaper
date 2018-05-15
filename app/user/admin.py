@@ -55,13 +55,13 @@ class UserFavoriteAdmin(admin.ModelAdmin):
 
     show_image.short_description = '图片链接'
 
-    list_display = ['id', 'show_user', 'show_image', 'add_time']
+    list_display = ['id', 'show_user', 'show_image', 'date_add']
 
-    list_display_links = ['id', 'show_user', 'show_image', 'add_time']
+    list_display_links = ['id', 'show_user', 'show_image', 'date_add']
 
     search_fields = ['show_user']
 
-    list_filter = ['add_time']
+    list_filter = ['date_add']
 
     ordering = ['id']
 

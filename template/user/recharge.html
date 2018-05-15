@@ -6,24 +6,49 @@
 {% block css_js %}
     {% load static %}
     {{ block.super }}
+
+
+
+    {% if message %}
+        <script>
+            $(document).ready(function () {
+                var status = "{{ status }}";
+                if (status == "fail") {
+                    toastr.error("{{ message }}");
+
+                } else {
+                    toastr.info("{{ message }}");
+                }
+
+            });
+        </script>
+    {% endif %}
+
 {% endblock %}
 
 
 {% block content %}
-    {{ user.email }} <br>
-    {{ user.date_joined }} <br>
-    {{ user.username }} <br>
-    {{ user.nickname }} <br>
-    {{ user.image }} <br>
-    {{ user.sex }} <br>
-    {{ user.birthday }} <br>
-    {{ user.address }} <br>
-    {{ user.phone }} <br>
-    {{ user.information }} <br>
-    {{ user.last_login }} <br>
-    {{ user.type }} <br>
-    {{ user.coin }} <br>
+    <h3 style="text-align: center">你当前的硬币数量 <span style="color:blue">{{ user.coin }}</span></h3>
+
+    <div style="width: 200px; margin: 100px auto;">
+
+        <form class="form" action="{% url 'user:recharge' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" name="coin_num" class="form-control"
+                       placeholder="输出需要充值的数量"
+                       onkeyup="this.value=this.value.replace(/\D/g,'')">
+            </div>
+            <button type="" class="btn btn-default" style="float: left;width: 80px;">取消</button>
+            <button type="submit" class="btn btn-primary" style="float: right;width: 80px;">充值</button>
+        </form>
+    </div>
+
+
+
 {% endblock %}
+
+
 
 
 

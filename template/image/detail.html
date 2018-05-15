@@ -431,23 +431,29 @@
     </div>
 
     <div class="image-view">
-        <img id="image" src="{{ MEDIA_URL }}image/7bd029fee26b3b582d7c34cccbed9184.jpg"
-             alt="{{ MEDIA_URL }}"
+        <img id="image" src="{{ url }}"
+             alt="{{ url }}"
              style="width: {{ show_width }}px;height: {{ show_height }}px;">
     </div>
 
     <div style="text-align: center; clear: both;margin-top: 10px;">
         <span type="button" class="btn btn-default">图片名</span>
-        <span type="button" class="btn btn-default">{{ name }}</span>
+        <span type="button" class="btn btn-default">
+            {% ifequal name 'None' %}
+                {{ '暂无图片名' }}
+            {% else %}
+                {{ name }}
+            {% endifequal %}
+        </span>
     </div>
 
     <div style="margin-top: 10px;margin-bottom: 10px">
-        {% if description != None %}
+        {% ifequal description None %}
             <textarea class="form-control" style="width: 1000px;margin: 0 auto; text-align: center" cols="1" rows="1">暂无描述</textarea>
         {% else %}
             <textarea class="form-control" style="width: 1000px;margin: 0 auto; font-size: 17px;text-align: center"
                       rows="3">{{ description }}</textarea>
-        {% endif %}
+        {% endifequal %}
     </div>
 
 
@@ -484,6 +490,17 @@
 
     <div style="clear: both; margin-bottom: 10px;"></div>
 
+
+    <div class="image-comment">
+            <div id="SOHUCS" sid="{{ image_id }}"></div>
+            <script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js"></script>
+            <script type="text/javascript">
+                window.changyan.api.config({
+                    appid: 'cytBiWjkG',
+                    conf: 'prod_23ccfa7b8bc980d309bcdd70eeb886c1'
+                });
+            </script>
+        </div>
 
 {% endblock %}
 

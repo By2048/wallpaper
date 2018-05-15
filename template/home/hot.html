@@ -30,7 +30,7 @@
         <ul class="list-group">
             {% for item in categorys.object_list %}
                 <li class="list-group-item">
-                    {% ifequal category_page 0 %}
+                    {% ifequal category_page 1 %}
                         <a href="{% url 'home:hot' item.id %}">{{ item.name }}</a>
                     {% else %}
                         <a href="{% url 'home:hot' item.id %}?category_page={{ category_page }}">{{ item.name }}</a>

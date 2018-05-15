@@ -6,18 +6,28 @@
     {% load static %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'home/index.css' %}">
-
+    <style>
+        .image-detail-info {
+            height: 25px;
+            width: 289px;
+            position: relative;
+            left: 20px;
+            bottom: 20px;
+            overflow: hidden;
+            text-align: center
+        }
+    </style>
 
     <script>
-
-
         var hot_image = null;
         var recommend_image = null;
 
         function view_image(element_id) {
             if (element_id == "hot-image-view") {
                 if (hot_image == null) {
-                    var viewer = new Viewer(document.getElementById(element_id));
+                    var viewer = new Viewer(document.getElementById(element_id), {
+                        url: 'data-original'
+                    });
                     hot_image = viewer;
                     viewer.show();
                 } else {
@@ -26,7 +36,9 @@
             }
             if (element_id == "recommend-image-view") {
                 if (recommend_image == null) {
-                    var viewer = new Viewer(document.getElementById(element_id));
+                    var viewer = new Viewer(document.getElementById(element_id), {
+                        url: 'data-original'
+                    });
                     recommend_image = viewer;
                     viewer.show();
                 } else {
@@ -79,7 +91,7 @@
 
     <div id="carousel-image" class="carousel slide container">
         <ol class="carousel-indicators">
-            {% for img_path in carousel_images %}
+            {% for image in carousel_images %}
                 {% if forloop.first %}
                     <li data-target="#carousel-image" data-slide-to="{{ forloop.counter }}" class="active"></li>
                 {% else %}
@@ -91,7 +103,7 @@
             {% for image in carousel_images %}
                 {% if forloop.first %}
                     <div class="item active">
-                        <a href="{% url 'image:detail' 2 %}">
+                        <a href="{% url 'image:detail' image.id %}">
                             <img class="d-block w-100" src="{{ image.url }}">
                         </a>
                         <div class="carousel-caption">{{ image.url }}</div>
@@ -115,7 +127,7 @@
     </div>
 
 
-    <div style="width: 250px;height: 40px; margin:9px auto;">
+    <div style="width: 300px;height: 40px; margin:9px auto;">
         <span class="btn btn-default"
               style="float:left; vertical-align:middle;  height:38px; font-size: 20px;">热门图片</span>
         <button class="btn btn-default" style="float:right; vertical-align:middle;  height:38px;"
@@ -124,31 +136,36 @@
     </div>
     <div style="clear:both;"></div>
 
+
     <div id="hot-image">
         <ul id="hot-image-view" style="display: none">
             {% for image in hot_images %}
-                <li><img src="{{ image.url }}" alt="{{ image.id }} {{ image.url }}"></li>
+                <li><img data-original="{{ image.url }}" alt="{{ image.id }} {{ image.url }}"></li>
             {% endfor %}
         </ul>
 
         <div class="row">
             {% for image in hot_images %}
-                <div class="col-sm-6 col-md-3">
-                    <a href="{% url 'image:detail' 2 %}" class="thumbnail">
-                        <img src="{{ image.url }}" alt="{{ image.url }}">
+                <div style="float: left; width: 325px;height: 230px; margin-left: 7px; padding: 0px">
+                    <a href="{% url 'image:detail' image.id %}" class="thumbnail">
+                        <img src="{{ image.url_thumb }}" alt="{{ image.url }}"
+                             class="img-responsive" style="max-width: 100%; height:auto;">
                     </a>
-                    <div class="image-detail-info"
-                         style="height: 25px;width: 289px;  position: absolute;left: 20px;bottom: 20px;overflow: hidden; text-align: center">
-                        {{ image.name }} {{ image.width }}x{{ image.height }}
+                    <div class="image-detail-info">
+                        {% ifequal image.name 'None' %}
+                        {% else %}
+                            {{ image.name }}
+                        {% endifequal %}
+                        {{ image.width }}x{{ image.height }}
                     </div>
                 </div>
             {% endfor %}
         </div>
     </div>
 
-    <div style="width: 250px;height: 40px; margin:9px auto;" class="view-recommend">
+    <div style="width: 300px;height: 40px; margin:9px auto;" class="view-recommend">
         <span class="btn btn-default"
-              style="float:left; vertical-align:middle;  height:38px; font-size: 20px;">推荐的图片</span>
+              style="float:left; vertical-align:middle;  height:38px; font-size: 20px;">推荐图片</span>
         <button class="btn btn-default" style="float:right; vertical-align:middle;  height:38px;"
                 onclick="view_image('recommend-image-view')">一键浏览
         </button>
@@ -159,19 +176,23 @@
     <div id="recommend-image">
         <ul id="recommend-image-view" style="display: none">
             {% for image in recommend_images %}
-                <li><img src="{{ image.url }}" alt="{{ image.url }}"></li>
+                <li><img data-original="{{ image.url }}" alt="{{ image.url }}"></li>
             {% endfor %}
         </ul>
         {% if recommend_images %}
             <div class="row">
                 {% for image in recommend_images %}
-                    <div class="col-sm-6 col-md-3">
-                        <a href="#" class="thumbnail">
-                            <img src="{{ image.url }}" alt="{{ image.url }}">
+                    <div style="float: left; width: 325px;height: 230px; margin-left: 7px; padding: 0px">
+                        <a href="{% url 'image:detail' image.id %}" class="thumbnail">
+                            <img src="{{ image.url_thumb }}" alt="{{ image.url }}"
+                                 class="img-responsive" style="max-width: 100%; height:auto;">
                         </a>
-                        <div class="image-detail-info"
-                             style="height: 25px;width: 289px;  position: absolute;left: 20px;bottom: 20px;overflow: hidden;text-align: center">
-                            {{ image.name }} {{ image.width }}x{{ image.height }}
+                        <div class="image-detail-info">
+                            {% ifequal image.name 'None' %}
+                            {% else %}
+                                {{ image.name }}
+                            {% endifequal %}
+                            {{ image.width }}x{{ image.height }}
                         </div>
                     </div>
                 {% endfor %}
@@ -181,10 +202,10 @@
         {% endif %}
     </div>
 
-    {#    <script>#}
-    {#        var xlm_wid = '12688';#}
-    {#        var xlm_url = 'https://www.xianliao.me/';#}
-    {#    </script>#}
-    {#    <script type='text/javascript' charset='UTF-8' src='https://www.xianliao.me/embed.js'></script>#}
+    <script>
+        var xlm_wid = '12688';
+        var xlm_url = 'https://www.xianliao.me/';
+    </script>
+    <script type='text/javascript' charset='UTF-8' src='https://www.xianliao.me/embed.js'></script>
 
 {% endblock %}

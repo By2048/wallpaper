@@ -107,8 +107,8 @@ def init_image():
 
 
 def clear_all():
-    Category.objects.all().delete()
     Tag.objects.all().delete()
+    Category.objects.all().delete()
     Image.objects.all().delete()
     UserProfile.objects.all().delete()
 
@@ -120,9 +120,9 @@ def clear_all():
 
 
 if __name__ == '__main__':
-    # clear_all()
-    # create_super_user()
-    # create_default_user()
-    # init_category()
+    clear_all()
+    create_super_user()
+    create_default_user()
+    init_category()
     # init_image()
     pass

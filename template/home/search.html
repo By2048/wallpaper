@@ -1,0 +1,105 @@
+{% extends 'base/base.html' %}
+
+{% block title %}搜索结果{% endblock %}
+
+
+{% block css_js %}
+    {% load static %}
+    {{ block.super }}
+
+    <style>
+        .search-images {
+            width: 1300px;
+            margin: 0 auto;
+        }
+
+    </style>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+    <div class="images">
+
+
+        <div class="message-info">
+            {% if message %}
+                <div style="margin: 100px auto;">
+                    <h3 style="text-align: center">{{ message }}</h3>
+                </div>
+            {% endif %}
+        </div>
+
+
+        {% ifequal images|length 1 %}
+            {% for item in search_imaes %}
+                <a href="{% url 'image:detail' item.id %}">
+                    <img width="1300px" height="100%" src="{{ item.url }}" alt="{{ item.name }}">
+                </a>
+            {% endfor %}
+        {% endifequal %}
+
+
+        <div class="search-images">
+            {% for item in images.object_list %}
+                <div style="float: left; width: 260px;height: 146px; margin-left: 0px; margin-top:50px;padding: 0px">
+                    <a href="{% url 'image:detail' item.id %}" class="thumbnail">
+                        <img src="{{ item.url_thumb }}" alt="{{ item.url }}">
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+
+
+        <div style="clear: both;"></div>
+
+        <div style="margin-left: 0px; margin-top: 30px;">
+            <nav>
+                <ul class="pagination">
+                    {% if images.has_previous %}
+                        <li class="pager-prev">
+                            <a href="{% url 'home:search' %}?keyword={{ keyword }}&image_page={{ image_page|add:-1 }}">上一页</a>
+                        </li>
+                    {% else %}
+                        <li class="pager-prev disabled">
+                            <a href="#">上一页</a>
+                        </li>
+                    {% endif %}
+
+                    {% for page in images.pages %}
+                        {% if page %}
+                            {% ifequal page images.number %}
+                                <li class="active">
+                                    <a href="{% url 'home:search' %}?keyword={{ keyword }}&image_page={{ page }}">{{ page }}</a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <a href="{% url 'home:search' %}?keyword={{ keyword }}&image_page={{ page }}">{{ page }}</a>
+                                </li>
+                            {% endifequal %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if images.has_next %}
+                        <li class="pager-prev">
+                            <a href="{% url 'home:search' %}?keyword={{ keyword }}&image_page={{ image_page|add:1 }}">下一页</a>
+                        </li>
+                    {% else %}
+                        <li class="pager-prev disabled">
+                            <a href="#">下一页</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+
+
+    </div>
+
+
+    <div style="clear: both;"></div>
+
+
+{% endblock %}

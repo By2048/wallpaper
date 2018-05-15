@@ -1,7 +1,11 @@
 # coding=utf-8
+import os
 import json
 import logging
 import datetime
+import hashlib
+
+import wallpaper.settings as settings
 
 from django.shortcuts import render
 from django.views.generic.base import View
@@ -10,12 +14,17 @@ from django.urls import reverse
 from django.contrib.auth import logout
 from django.core.mail import send_mail
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from pure_pagination import Paginator
+
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
+from PIL import Image as PImage
+
 from user.forms import RegisterForm
-from user.models import UserProfile, Favorite, Comment, SignIn, Coin
-from image.models import Image, Rating
+from user.models import UserProfile, Favorite, SignIn, Coin
+from image.models import Image, Rating, Tag, Category
 
 
 class RegisterView(View):
@@ -170,17 +179,24 @@ class Recharge(LoginRequiredMixin, View):
 
     def post(self, request):
         user = request.user
-        coin_num = request.POST.get('coin_num', 0)
-        if coin_num > 0:
-            if user.is_active == True:
-                user.coin += coin_num
-                user.save()
-                message = '充值成功！'
-            else:
-                message = '用户未激活'
+        coin_num = request.POST.get('coin_num', '')
+        if coin_num == '':
+            status = 'fail'
+            message = '未输入内容！'
         else:
-            message = '输入的硬币数量错误'
-        return render(request, 'user/recharge.html', {'user': user, 'message': message})
+            coin_num = int(coin_num)
+            if coin_num > 0:
+                if user.is_active == True:
+                    user.coin += coin_num
+                    user.save()
+                    status = 'success'
+                    message = '充值成功！'
+                else:
+                    status = 'fail'
+                    message = '用户未激活'
+            else:
+                message = '输入的硬币数量错误'
+        return render(request, 'user/recharge.html', {'user': user, 'status': status, 'message': message})
 
 
 def sign_in(request):
@@ -206,3 +222,124 @@ def sign_in(request):
             status = 'success'
             message = '签到成功 签到时间为  ' + datetime.datetime.now().strftime('%I:%M:%S %p')
         return JsonResponse({'status': status, 'message': message})
+
+
+@login_required
+def favorite(request, category_id=0):
+    # todo 查询优化
+    user = request.user
+    all_category = Category.objects.all()
+
+    all_image = []
+    all_favorite = Favorite.objects.filter(user=user).order_by('-date_add')
+    for favorite in all_favorite:
+        image = Image.objects.get(pk=favorite.image.id)
+        all_image.append(image)
+
+    page_categorys = Paginator(all_category, 15, request=request)
+    category_page = request.GET.get('category_page', 1)
+    categorys = page_categorys.page(category_page)
+
+    page_images = Paginator(all_image, 20, request=request)
+    image_page = request.GET.get('image_page', 1)
+    images = page_images.page(image_page)
+
+    # all_favorite = Favorite.objects.filter(user=user)
+    return render(request, 'user/favorite.html', {
+        'category_id': category_id,
+        'image_page': image_page,
+        'category_page': category_page,
+        'categorys': categorys,
+        'images': images
+    })
+
+
+# 作者发布图片
+class ReleaseView(LoginRequiredMixin, View):
+    def get(self, request):
+        all_category = Category.objects.all()
+
+        return render(request, 'user/release.html', {
+            'all_category': all_category,
+        })
+
+    def post(self, request):
+        all_category = Category.objects.all()
+        images = request.FILES.getlist("image_file")
+        categorys = request.POST.getlist("image_category")
+        description = request.POST.get("image_description")
+        tags = request.POST.get('image_tag', '')
+        if tags != '' and tags.find('|'):
+            tags = tags.split('|')
+
+        all_file_url = []
+        upload_path = os.path.join(settings.MEDIA_ROOT, 'release')
+        upload_path_thumb = os.path.join(settings.MEDIA_ROOT, 'release_thumb')
+        if images:
+            for image in images:
+                md5 = hashlib.md5()
+                for chrunk in image.chunks():
+                    md5.update(chrunk)
+                name = image.name
+                size = image.size
+                type = os.path.splitext(name)[-1]
+                md5_name = md5.hexdigest()
+
+                img_path = os.path.join(upload_path, md5_name) + type
+                img_path_thumb = os.path.join(upload_path_thumb, md5_name) + type
+
+                url = os.path.join(settings.MEDIA_URL, 'release', md5_name) + type
+                url_thumb = os.path.join(settings.MEDIA_URL, 'release_thumb', md5_name) + type
+
+                all_file_url.append(url_thumb)
+
+                img = open(img_path, 'wb')
+                for chrunk in image.chunks():
+                    img.write(chrunk)
+                img.close()
+
+                pimg = PImage.open(img_path)
+
+                _img = Image()
+                _img.user = request.user
+                _img.name = name
+                _img.description = description
+                _img.url = url
+                _img.url_thumb = url_thumb
+                _img.size = size
+                _img.width, _img.height = pimg.size
+                _img.type = type.strip('.')
+                _img.save()
+
+                pimg.thumbnail((300, 300))
+                pimg.save(img_path_thumb)
+
+                for category_id in categorys:
+                    category = Category.objects.get(pk=category_id)
+                    _img.categorys.add(category)
+                for tag_name in tags:
+                    tag = None
+                    try:
+                        tag = Tag.objects.get(name=tag_name)
+                    except:
+                        pass
+                    if tag:
+                        _img.tags.add(tag)
+                    else:
+                        tag = Tag()
+                        tag.name = tag_name
+                        tag.user = request.user
+                        tag.save()
+                        _img.tags.add(tag)
+                _img.save()
+
+            return render(request, 'user/release.html', {
+                'message': '文件上传成功！',
+                'all_file_url': all_file_url,
+                'all_category': all_category,
+            })
+        else:
+            return render(request, 'user/release.html', {
+                'message': '请先选择需要上传的文件！',
+                'all_category': all_category,
+            })
