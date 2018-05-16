@@ -343,3 +343,23 @@ class ReleaseView(LoginRequiredMixin, View):
                 'message': '请先选择需要上传的文件！',
                 'all_category': all_category,
             })
+
+
+class ReleaseAdminView(LoginRequiredMixin, View):
+    def get(self, request):
+        user = request.user
+        images = Image.objects.filter(user=user)
+        return render(request, 'user/release_admin.html', {'images': images})
+
+    def post(self, request):
+        # todo 目前一次只处理一条数据,后续改为批量删除
+        user = request.user
+        image_id = request.POST.get('image_id')
+        image = Image.objects.get(pk=image_id)
+        status = 'fail'
+        message = '删除失败！'
+        if image.user == user:
+            image.delete()
+            status = 'success'
+            message = '删除成功！'
+        return JsonResponse({'status': status, 'message': message})

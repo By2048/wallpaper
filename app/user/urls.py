@@ -9,7 +9,8 @@ from user.views import \
     add_coin, \
     favorite, \
     Recharge, \
-    ReleaseView
+    ReleaseView, \
+    ReleaseAdminView
 
 app_name = 'user'
 urlpatterns = [
@@ -23,4 +24,5 @@ urlpatterns = [
     path('favorite/', favorite, name='favorite'),
     path('recharge/', Recharge.as_view(), name='recharge'),
     path('release/', ReleaseView.as_view(), name='release'),
+    path('release_admin/', ReleaseAdminView.as_view(), name='release_admin'),
 ]
