@@ -9,6 +9,7 @@ class Category(models.Model):
     name = models.CharField(max_length=50, verbose_name='分类名')
     user = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING, verbose_name='添加的用户', null=True)
     date_add = models.DateTimeField(default=timezone.now, verbose_name='添加的时间')
+    count = models.IntegerField(default=0, verbose_name='分类图片的数量')
 
     class Meta:
         db_table = 'db_category'
@@ -26,6 +27,7 @@ class Tag(models.Model):
     name = models.CharField(max_length=500, default='')
     user = models.ForeignKey(UserProfile, on_delete=models.DO_NOTHING, verbose_name='添加的用户', null=True)
     data_add = models.DateTimeField(default=timezone.now, verbose_name='添加的时间')
+    count = models.IntegerField(default=0, verbose_name='分类图片的数量')
 
     class Meta():
         db_table = 'db_tag'
@@ -128,3 +130,5 @@ class Rating(models.Model):
         db_table = 'db_rating'
         verbose_name = '用户评分'
         verbose_name_plural = verbose_name
+
+

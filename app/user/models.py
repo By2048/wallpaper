@@ -8,25 +8,6 @@ from captcha.fields import CaptchaField
 from tool import image_tool
 
 
-# class ImageStorage(FileSystemStorage):
-#     from django.conf import settings
-#     def __init__(self, location=settings.MEDIA_ROOT, base_url=settings.MEDIA_URL):
-#         super(ImageStorage, self).__init__(location, base_url)
-#
-#     def _save(self, name, content):
-#         import os, time, random
-#         ext = os.path.splitext(name)[1]
-#         # 文件目录
-#         d = os.path.dirname(name)
-#         # 定义文件名，年月日时分秒随机数
-#         fn = time.strftime('%Y%m%d%H%M%S')
-#         fn = fn + '_%d' % random.randint(0, 100)
-#         # 重写合成文件名
-#         name = os.path.join(d, fn + ext)
-#         return super(ImageStorage, self)._save(name, content)
-#         # 调用父类方法
-
-
 class UserProfile(AbstractUser):
     """在Django中默认的Usr进行拓展"""
     _sex = (
@@ -50,10 +31,9 @@ class UserProfile(AbstractUser):
         },
     )
     nickname = models.CharField(max_length=50, default='用户默认昵称', verbose_name='昵称', help_text='实际展示给他人的名称，可随时更改')
-    picture = models.ImageField(upload_to='image/%Y/%m',
-                                # storage=ImageStorage(),
-                                default='resource/user_image/default.png',
-                                verbose_name='头像', help_text='用户显示的头像！')
+    # todo 换用 model.ImageField
+    picture = models.URLField(max_length=500, default='/media/resource/default.png', verbose_name='头像连接',
+                              help_text='用户显示的头像！')
     sex = models.CharField(max_length=3, choices=_sex, default='-1', null=True, blank=True, verbose_name='性别',
                            help_text='可不填 默认为中性！')
     birthday = models.DateField(max_length=10, null=True, blank=True, verbose_name='生日', help_text='可不填！')
@@ -176,4 +156,15 @@ class Coin(models.Model):
     class Meta:
         db_table = 'db_coin'
         verbose_name = '推荐投币'
+        verbose_name_plural = verbose_name
+
+
+class Recommend(models.Model):
+    user = models.ForeignKey(UserProfile, verbose_name='用户', on_delete=models.CASCADE)
+    image = models.ForeignKey('image.Image', related_name='image', verbose_name='推荐的图片', on_delete=models.CASCADE)
+    date_add = models.DateTimeField(default=timezone.now, verbose_name='添加时间')
+
+    class Meta:
+        db_table = 'db_recommend'
+        verbose_name = '用户推荐'
         verbose_name_plural = verbose_name

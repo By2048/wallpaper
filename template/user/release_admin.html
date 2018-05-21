@@ -1,0 +1,88 @@
+{% extends 'base/base.html' %}
+
+{% block title %}图片管理{% endblock %}
+
+{% block css_js %}
+    {% load static %}
+    {{ block.super }}
+
+    <style>
+        .images {
+            width: 1000px;
+            float: right;
+        }
+
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle !important;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            $("button").click(function () {
+                var image_id = $(this).attr("image_id");
+                var index = $(this).attr("index");
+                $.ajax({
+                    type: "post",
+                    url: "{% url 'user:release_admin' %}",
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        "image_id": image_id
+                    },
+                    success: function (data) {
+                        if (data.status == 'success') {
+                            toastr.info(data.message);
+                        } else {
+                            toastr.error(data.message);
+                        }
+                    }
+                });
+                $(this).parent().parent().remove();
+            });
+        });
+    </script>
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="images">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>ID</th>
+                <th>img</th>
+                <th>date add</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for image in images %}
+                <tr>
+                    <th>{{ forloop.counter }}</th>
+                    <td>{{ image.id }}</td>
+                    <td>
+                        <a href="{% url 'image:detail' image.id %}">
+                            <img src={{ image.url_thumb }} alt={{ image.name }} width="100px"/>
+                        </a>
+                    </td>
+                    <td>
+                        <button class="btn btn-default" index="{{ forloop.counter }}" image_id="{{ image.id }}">删除
+                        </button>
+                    </td>
+                    <td>
+                        {{ image.date_add }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    <div style="clear: both"></div>
+
+{% endblock %}
+
+

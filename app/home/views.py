@@ -8,8 +8,9 @@ from pure_pagination import Paginator, PageNotAnInteger
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 
-from image.models import Category, Tag, Image, Carousel
+from image.models import Category, Tag, Image, Carousel, HotImage
 from user.models import BlackHouse, UserProfile
+from user.models import Recommend
 
 
 class IndexView(View):
@@ -22,7 +23,14 @@ class IndexView(View):
         hot_images = all_image.order_by('click')[:image_num]
 
         if request.user.is_authenticated:
-            recommend_images = all_image.order_by('?')[:image_num]
+            all_recommend = Recommend.objects.filter(user=request.user)
+            recommend_images = []
+            for item in all_recommend:
+                recommend_images.append(item.image)
+            recommend_images = recommend_images[:image_num]
+            if recommend_images == False:
+                recommend_images = all_image.order_by('?')[:image_num]
+
         else:
             recommend_images = all_image.order_by('?')[:image_num]
 
@@ -39,16 +47,45 @@ class IndexView(View):
 
 
 def hot(request, category_id=0):
-    all_category = Category.objects.all()
+    all_image = []
+    all_category = []
+
+    all_hot_image = HotImage.objects.all()
+    for hot_image in all_hot_image:
+        all_image.append(hot_image.image)
+
+    if len(all_hot_image) == 0:
+        return render(request, 'home/hot.html', {
+            'message': '暂无热门图片!'
+        })
+
+    for image in all_image:
+        for item in image.categorys.all():
+            if item not in all_category:
+                all_category.append(item)
+
+    for category in all_category:
+        cnt = 0
+        for item in all_image:
+            if category in item.categorys.all():
+                cnt += 1
+        category.count = cnt
+
     page_categorys = Paginator(all_category, 15, request=request)
     category_page = request.GET.get('category_page', 1)
     categorys = page_categorys.page(category_page)
 
     if category_id == 0:
-        all_images = Image.objects.all().order_by('click')
+        category = all_category[0]
     else:
-        all_images = Image.objects.filter(categorys__id=category_id).order_by('click')
-    page_images = Paginator(all_images, 20, request=request)
+        category = Category.objects.get(pk=category_id)
+
+    _all_image = []
+    for item in all_image:
+        if category in item.categorys.all():
+            _all_image.append(item)
+
+    page_images = Paginator(_all_image, 20, request=request)
     image_page = request.GET.get('image_page', 1)
     images = page_images.page(image_page)
 
@@ -62,12 +99,12 @@ def hot(request, category_id=0):
 
 
 def category(request, category_id=1):
-    all_category = Category.objects.all()
+    all_category = Category.objects.all().filter(count__gt=0)
     page_categorys = Paginator(all_category, 15, request=request)
     category_page = request.GET.get('category_page', 1)
     categorys = page_categorys.page(category_page)
 
-    all_images = Image.objects.filter(categorys__id=category_id)
+    all_images = Image.objects.filter(categorys__id=all_category[0].id)
     page_images = Paginator(all_images, 20, request=request)
     image_page = request.GET.get('image_page', 1)
     images = page_images.page(image_page)
@@ -82,13 +119,13 @@ def category(request, category_id=1):
 
 
 def tag(request, tag_id=1):
-    all_tag = Tag.objects.all()
+    all_tag = Tag.objects.all().filter(count__gt=0)
 
     page_tags = Paginator(all_tag, 15, request=request)
     tag_page = request.GET.get('tag_page', 1)
     tags = page_tags.page(tag_page)
 
-    all_images = Image.objects.filter(tags__id=tag_id)
+    all_images = Image.objects.filter(tags__id=all_tag[0].id)
     page_images = Paginator(all_images, 20, request=request)
     image_page = request.GET.get('image_page', 1)
     images = page_images.page(image_page)
@@ -121,14 +158,6 @@ def range(request):
         }
         images.append(_item)
     return render(request, 'home/range.html', {'images': images})
-
-
-class HotView(View):
-    def get(self, request):
-        hot_images = Image.objects.all().order_by('click')[:30]
-        return render(request, 'home/hot.html', context={
-            'hot_images': hot_images
-        })
 
 
 class BlackHouseView(View):

@@ -1,7 +1,7 @@
 <script>
 
     $(document).ready(function () {
-        $(".sign-in").click(function () {
+        $("#sign-in").click(function () {
             {#每日签到模块#}
             if ('{{ user.is_authenticated }}' == 'True') {
 
@@ -44,7 +44,8 @@
                 </ul>
 
 
-                <form class="navbar-form navbar-left" method="get" action="{% url 'home:search' %}" style="margin-left: 100px">
+                <form class="navbar-form navbar-left" method="get" action="{% url 'home:search' %}"
+                      style="margin-left: 100px">
                     <div class="form-group">
                         <input type="text" name="keyword" class="form-control" placeholder="Search">
                         <button type="submit" class="btn btn-default">搜索</button>
@@ -62,12 +63,13 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a href="{% url 'user:info' %}">我的信息</a></li>
-                                    <li>
-                                        <span class="sign-in" style="margin-left: 20px; cursor:Pointer;">每日签到</span>
-                                    </li>
+                                    <li><a href="#" id="sign-in">每日签到</a></li>
                                     <li><a href="{% url 'user:favorite' %}">我的收藏</a></li>
-                                    <li><a href="#">发布图片</a></li>
-                                    <li><a href="{% url 'user:recharge' %}">硬币充值</a></li>
+                                    <li role="separator" class="divider"></li>
+
+                                    <li><a href="{% url 'user:release' %}">发布图片</a></li>
+                                    <li><a href="{% url 'user:release_admin' %}">发布管理</a></li>
+                                    {#<li><a href="{% url 'user:recharge' %}">硬币充值</a></li>#}
                                     <li role="separator" class="divider"></li>
                                     <li><a href="{% url 'logout' %}?next={{ request.path }}">登出</a></li>
                                 </ul>
@@ -79,7 +81,7 @@
                 </div>
 
 
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
+            </div>
+        </div>
     </nav>
 </div>

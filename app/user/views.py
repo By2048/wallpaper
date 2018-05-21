@@ -154,21 +154,59 @@ class SentMessage(LoginRequiredMixin, View):
         to_user = request.POST.get('to_user_id', 0)
 
 
-class AddComment(LoginRequiredMixin, View):
-    def post(self, request):
-        image_id = request.POST.get('image_id', 0)
-        comment = Comment()
-        comment.image = Image.objects.get(pk=image_id)
-        comment.user = request.user
-        comment.date_add = timezone.now()
-        comment.save()
-        data = {'status': 'success', 'message': '评论成功！'}
-        return JsonResponse(data)
-
-
 class UserinfoView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
+        return render(request, 'user/info.html', {'user': user})
+
+    def post(self, request):
+        user = request.user
+        nickname = request.POST.get('nickname', '')
+        picture = request.FILES.get('picture', '')
+        email = request.POST.get('email', '')
+        sex = request.POST.get('sex', '')
+        birthday = request.POST.get('birthday', '')
+        address = request.POST.get('address', '')
+        phone = request.POST.get('address', '')
+        information = request.POST.get('information', '')
+
+        if nickname != '':
+            user.nickname = nickname
+        if picture:
+            upload_path = os.path.join(settings.MEDIA_ROOT, 'user_pic')
+            md5 = hashlib.md5()
+            for chrunk in picture.chunks():
+                md5.update(chrunk)
+
+            type = os.path.splitext(picture.name)[-1]
+            md5_name = md5.hexdigest()
+
+            img_path = os.path.join(upload_path, md5_name) + type
+
+            img = open(img_path, 'wb')
+            for chrunk in picture.chunks():
+                img.write(chrunk)
+            img.close()
+
+            url = os.path.join(settings.MEDIA_URL, 'user_pic', md5_name) + type
+
+            user.picture = url
+
+        if email != '':
+            user.email = email
+        if sex != '':
+            user.sex = sex
+        if birthday != '':
+            user.birthday = birthday
+        if address != '':
+            user.address = address
+        if phone != '':
+            user.phone = phone
+        if information != '':
+            user.information = information
+
+        user.save()
+
         return render(request, 'user/info.html', {'user': user})
 
 
@@ -215,6 +253,7 @@ def sign_in(request):
             message = '已经签到 签到时间为  ' + sign_in[0].date_add.strftime('%I:%M:%S %p')
         else:
             user.coin += 1
+            user.sign_in_times += 1
             user.save()
             sign_in = SignIn()
             sign_in.user = user
@@ -228,23 +267,51 @@ def sign_in(request):
 def favorite(request, category_id=0):
     # todo 查询优化
     user = request.user
-    all_category = Category.objects.all()
 
+    all_category = []
     all_image = []
+
     all_favorite = Favorite.objects.filter(user=user).order_by('-date_add')
+
+    if len(all_favorite) == 0:
+        return render(request, 'user/favorite.html', {
+            'message': '暂无收藏!'
+        })
+
     for favorite in all_favorite:
         image = Image.objects.get(pk=favorite.image.id)
         all_image.append(image)
+
+    for image in all_image:
+        for item in image.categorys.all():
+            if item not in all_category:
+                all_category.append(item)
+
+    for category in all_category:
+        cnt = 0
+        for item in all_image:
+            if category in item.categorys.all():
+                cnt += 1
+        category.count = cnt
 
     page_categorys = Paginator(all_category, 15, request=request)
     category_page = request.GET.get('category_page', 1)
     categorys = page_categorys.page(category_page)
 
-    page_images = Paginator(all_image, 20, request=request)
+    if category_id == 0:
+        category = all_category[0]
+    else:
+        category = Category.objects.get(pk=category_id)
+
+    _all_image = []
+    for item in all_image:
+        if category in item.categorys.all():
+            _all_image.append(item)
+
+    page_images = Paginator(_all_image, 20, request=request)
     image_page = request.GET.get('image_page', 1)
     images = page_images.page(image_page)
 
-    # all_favorite = Favorite.objects.filter(user=user)
     return render(request, 'user/favorite.html', {
         'category_id': category_id,
         'image_page': image_page,
@@ -314,23 +381,42 @@ class ReleaseView(LoginRequiredMixin, View):
                 pimg.thumbnail((300, 300))
                 pimg.save(img_path_thumb)
 
-                for category_id in categorys:
-                    category = Category.objects.get(pk=category_id)
+                if len(categorys) == 0:
+                    category = Category.objects.get(name='Other')
+                    category.count += 1
+                    category.save()
                     _img.categorys.add(category)
-                for tag_name in tags:
-                    tag = None
-                    try:
-                        tag = Tag.objects.get(name=tag_name)
-                    except:
-                        pass
-                    if tag:
-                        _img.tags.add(tag)
-                    else:
-                        tag = Tag()
-                        tag.name = tag_name
-                        tag.user = request.user
-                        tag.save()
-                        _img.tags.add(tag)
+                else:
+                    for category_id in categorys:
+                        category = Category.objects.get(pk=category_id)
+                        category.count += 1
+                        category.save()
+                        _img.categorys.add(category)
+
+                if len(tags) == 0:
+                    tag = Tag.objects.get(name='Other')
+                    tag.count += 1
+                    tag.save()
+                    _img.tags.add(tag)
+
+                else:
+                    for tag_name in tags:
+                        tag = None
+                        try:
+                            tag = Tag.objects.get(name=tag_name)
+                        except:
+                            pass
+                        if tag:
+                            tag.count += 1
+                            tag.save()
+                            _img.tags.add(tag)
+                        else:
+                            tag = Tag()
+                            tag.name = tag_name
+                            tag.user = request.user
+                            tag.count += 1
+                            tag.save()
+                            _img.tags.add(tag)
                 _img.save()
 
             return render(request, 'user/release.html', {
@@ -348,7 +434,7 @@ class ReleaseView(LoginRequiredMixin, View):
 class ReleaseAdminView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        images = Image.objects.filter(user=user)
+        images = Image.objects.filter(user=user).order_by('-date_add')
         return render(request, 'user/release_admin.html', {'images': images})
 
     def post(self, request):
@@ -359,6 +445,15 @@ class ReleaseAdminView(LoginRequiredMixin, View):
         status = 'fail'
         message = '删除失败！'
         if image.user == user:
+            for category in image.categorys.all():
+                category.count -= 1
+                category.save()
+            try:
+                for tag in image.tags:
+                    tag.count -= 1
+                    tag.save()
+            except:
+                pass
             image.delete()
             status = 'success'
             message = '删除成功！'

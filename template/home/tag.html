@@ -37,11 +37,15 @@
                 {% for item in tags.object_list %}
                     {% ifequal tag_page 1 %}
                         <li class="list-group-item">
-                            <a href="{% url 'home:tag' item.id %}">{{ item.name }}</a>
+                            <a href="{% url 'home:tag' item.id %}">{{ item.name }}
+                                <span class="badge">{{ item.count }}</span>
+                            </a>
                         </li>
                     {% else %}
                         <li class="list-group-item">
-                            <a href="{% url 'home:tag' item.id %}?tag_page={{ tag_page }}">{{ item.name }}</a>
+                            <a href="{% url 'home:tag' item.id %}?tag_page={{ tag_page }}">{{ item.name }}
+                                <span class="badge">{{ item.count }}</span>
+                            </a>
                         </li>
                     {% endifequal %}
 
@@ -71,7 +75,7 @@
         <div class="row">
             {% for item in images.object_list %}
                 <div style="float: left; width: 282px;height: 175px; margin-left: 0px; padding: 0px">
-                    <a href="{% url 'image:detail' 2 %}" class="thumbnail">
+                    <a href="{% url 'image:detail' item.id %}" class="thumbnail">
                         <img src="{{ item.url_thumb }}" alt="{{ item.url }}">
                         {#<img src="{{ MEDIA_URL }}image/6.jpg" alt="">#}
                     </a>

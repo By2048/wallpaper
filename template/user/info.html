@@ -11,20 +11,194 @@
 
 
 {% block content %}
-    {{ user.email }} <br>
-    {{ user.date_joined }} <br>
-    {{ user.username }} <br>
-    {{ user.nickname }} <br>
-    {{ user.image }} <br>
-    {{ user.sex | get_six_disply }} <br>
-    {{ user.birthday }} <br>
-    {{ user.address }} <br>
-    {{ user.phone }} <br>
-    {{ user.information }} <br>
-    {{ user.last_login }} <br>
-    {{ user.type }} <br>
-    {{ user.coin }} <br>
-    {{ user.sign_in_times }} <br>
+
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a href="#user-info" data-toggle="tab">用户信息</a></li>
+        <li><a href="#change-info" data-toggle="tab">修改用户信息</a></li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="user-info">
+            <div style="width: 700px;margin:30px auto;">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>用户信息</th>
+                        <th>当前值</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>用户名</td>
+                        <td>{{ user.username }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>昵称</td>
+                        <td>{{ user.nickname }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td>头像</td>
+                        <td><img src="{{ user.picture }}" style="width: 15px;height: 15px;"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">4</th>
+                        <td>性别</td>
+                        <td>{{ user.sex | get_six_disply }} </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">5</th>
+                        <td>邮箱</td>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">6</th>
+                        <td>注册时间</td>
+                        <td>{{ user.date_joined }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">7</th>
+                        <td>生日</td>
+                        <td>{{ user.birthday }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">8</th>
+                        <td>地址</td>
+                        <td>{{ user.address }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">9</th>
+                        <td>手机号</td>
+                        <td>{{ user.phone }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">10</th>
+                        <td>信息</td>
+                        <td>{{ user.information }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">11</th>
+                        <td>最后登录时间</td>
+                        <td>{{ user.last_login }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">12</th>
+                        <td>硬币</td>
+                        <td>{{ user.coin }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">13</th>
+                        <td>签到次数</td>
+                        <td>{{ user.sign_in_times }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="change-info">
+            <div style="width: 700px;margin:30px auto;">
+                <form method="post" action="{% url 'user:info' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>用户信息</th>
+                            <th>当前值</th>
+                            <th>新值</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>昵称</td>
+                            <td>{{ user.nickname }}</td>
+                            <td>
+                                <div><input type="text" name="nickname" value=""></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>头像</td>
+                            <td><img src="{{ user.picture }}" style="width: 15px;height: 15px;"></td>
+                            <td>
+                                <div>
+                                    <input id="file" type="file" name="picture" accept="image/*">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>性别</td>
+                            <td>{{ user.sex | get_six_disply }} </td>
+                            <td>
+                                <div>
+                                    <input type="radio" name="sex" value="1">
+                                    <label for="genderChoice1">男</label>
+                                    <input type="radio" name="sex" value="0">
+                                    <label for="genderChoice2">女</label>
+                                    <input type="radio" name="sex" value="-1">
+                                    <label for="genderChoice3">中</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">4</th>
+                            <td>邮箱</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                <div><input type="email" name="email"></div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th scope="row">5</th>
+                            <td>生日</td>
+                            <td>{{ user.birthday }}</td>
+                            <td>
+                                <div><input type="date" name="birthday"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">6</th>
+                            <td>地址</td>
+                            <td>{{ user.address }}</td>
+                            <td>
+                                <div><input type="text" name="address"></div>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <th scope="row">7</th>
+                            <td>手机号</td>
+                            <td>{{ user.phone }}</td>
+                            <td>
+                                <div><input type="tel" name="phone"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">8</th>
+                            <td>信息</td>
+                            <td>{{ user.information }}</td>
+                            <td>
+                                <div><input type="text" name="information"></div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div>
+                        <input class="btn btn-default" style="width:100%;height: 33px" type="submit" value="提交"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+    </div>
+
 {% endblock %}
 
 {% block footer %}
