@@ -37,12 +37,21 @@ class RegisterView(View):
         next = request.POST.get('next', '')
         form = RegisterForm(request.POST)
         if form.is_valid():
+            email = request.POST.get('email', '')
+            _user = UserProfile.objects.filter(email=email)
+            if _user:
+                register_form = RegisterForm()
+                return render(request, 'user/register.html', {
+                    'register_form': register_form,
+                    'next': next,
+                    'message': '此邮箱已经注册！'
+                })
             form.save()
             send_mail(
                 'Subject here',
                 'Here is the message.',
                 'user_admin@email.com',
-                [form.email],
+                [email],
                 fail_silently=False,
             )
             if next:

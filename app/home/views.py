@@ -30,7 +30,6 @@ class IndexView(View):
             recommend_images = recommend_images[:image_num]
             if recommend_images == False:
                 recommend_images = all_image.order_by('?')[:image_num]
-
         else:
             recommend_images = all_image.order_by('?')[:image_num]
 
@@ -81,9 +80,13 @@ def hot(request, category_id=0):
         category = Category.objects.get(pk=category_id)
 
     _all_image = []
-    for item in all_image:
-        if category in item.categorys.all():
-            _all_image.append(item)
+    if category_id != 0:
+        for item in all_image:
+            if category in item.categorys.all():
+                _all_image.append(item)
+    else:
+        for item in HotImage.objects.all():
+            _all_image.append(item.image)
 
     page_images = Paginator(_all_image, 20, request=request)
     image_page = request.GET.get('image_page', 1)
@@ -104,7 +107,7 @@ def category(request, category_id=1):
     category_page = request.GET.get('category_page', 1)
     categorys = page_categorys.page(category_page)
 
-    all_images = Image.objects.filter(categorys__id=all_category[0].id)
+    all_images = Image.objects.filter(categorys__id=category_id)
     page_images = Paginator(all_images, 20, request=request)
     image_page = request.GET.get('image_page', 1)
     images = page_images.page(image_page)
@@ -200,14 +203,19 @@ def search(request):
         pass
     finally:
         if isinstance(img_id, int):
-            if len(str(img_id)) >= 5:
-                search_images = Image.objects.filter(id=img_id)
-                if search_images:
-                    return render(request, 'home/search.html', {
-                        'images': search_images,
-                        'keyword': keyword,
-                        'message': '无查询内容！'
-                    })
+            if len(str(img_id)) <= 5:
+                try:
+                    search_image = Image.objects.get(id=img_id)
+                except:
+                    return render(request, 'home/search.html', {'message': '无此ID！'})
+                return HttpResponseRedirect('/image/detail/' + str(img_id))
+
+            elif len(str(img_id)) == 6:
+                try:
+                    search_image = Image.objects.get(pid=img_id)
+                except:
+                    return render(request, 'home/search.html', {'message': '无此PID！'})
+                return HttpResponseRedirect('/image/detail/' + str(img_id))
 
     all_cateory = Category.objects.all()
     for category in all_cateory:

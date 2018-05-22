@@ -18,7 +18,10 @@ class DetailView(View):
         if image_id == 0:
             data = {'message': '此图片不存在!'}
         else:
-            image = Image.objects.get(pk=image_id)
+            if len(str(image_id)) == 6:
+                image = Image.objects.get(pid=image_id)
+            else:
+                image = Image.objects.get(pk=image_id)
             image.click += 1
             image.save()
             if request.user.is_authenticated:
@@ -101,4 +104,3 @@ def add_category(request):
             message = message.rstrip('\n')
 
         return JsonResponse({"status": status, "message": message})
-

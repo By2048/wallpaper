@@ -46,6 +46,14 @@ def create_super_user():
         user.save()
 
 
+def init_default_category():
+    user_default = UserProfile.objects.get(email='user_default@email.com')
+    category = Category()
+    category.name = 'Other'
+    category.user = user_default
+    category.save()
+
+
 def init_category():
     user_default = UserProfile.objects.get(email='user_default@email.com')
     cur_sqlite = db_sqlite.cursor()
@@ -55,13 +63,9 @@ def init_category():
         category.name = item[0]
         category.user = user_default
         category.save()
-    category = Category()
-    category.name = 'Other'
-    category.user = user_default
-    category.save()
 
 
-def init_tag():
+def init_default_tag():
     user_default = UserProfile.objects.get(email='user_default@email.com')
     tag = Tag()
     tag.name = 'Other'
@@ -89,28 +93,35 @@ def init_image():
         category_id = item[6]
         if category_id != '':
             category = Category.objects.get(pk=int(item[6]))
+            category.count += 1
+            category.save()
             image.categorys.add(category)
 
         tags_info = item[7]
         if tags_info != '':
             tags_info = "{'tags':" + tags_info + "}"
+            tags_info = tags_info.replace("'tags'", '"tags"') \
+                .replace("'name'", '"name"') \
+                .replace("'id'", '"id"') \
+                .replace(": '", ': "') \
+                .replace("', ", '", ') \
+                .replace("'}", '"}')
             try:
-                tags_info = json.loads(tags_info.replace('\'', '\"'))
+                tags_info = json.loads(tags_info)
             except Exception as e:
-                tags_info = tags_info.replace('\'', '\"')
-                tags_info = tags_info.replace('\"s ', "\' s")
-                try:
-                    tags_info = json.loads(tags_info.replace('\'', '\"'))
-                except:
-                    pass
+                logging.error(tags_info)
+                pass
             try:
                 for item in tags_info['tags']:
                     try:
                         tag = Tag.objects.get(name=item['name'])
+                        tag.count += 1
+                        tag.save()
                         image.tags.add(tag)
                     except Exception as e:
                         tag = Tag()
                         tag.name = item['name']
+                        tag.count = 1
                         tag.save()
                         image.tags.add(tag)
             except Exception as e:
@@ -132,10 +143,11 @@ def clear_all():
 
 
 if __name__ == '__main__':
-    clear_all()
-    create_super_user()
-    create_default_user()
-    init_category()
-    init_tag()
+    # clear_all()
+    # create_super_user()
+    # create_default_user()
+    # init_category()
+    # init_default_category()
+    # init_default_tag()
     # init_image()
     pass

@@ -28,6 +28,9 @@
         <div class="flex-center">
             <div class="unit-1-2 unit-1-on-mobile">
                 <h3>注册</h3>
+                {% if message %}
+                    <h3 style="text-align: center">{{ message }}</h3>
+                {% endif %}
                 <form class="form" action="{% url 'user:register' %}" method="post">
                     {% csrf_token %}
                     {% for field in register_form %}

@@ -26,20 +26,16 @@
 
         <div class="message-info">
             {% if message %}
+
                 <div style="margin: 100px auto;">
                     <h3 style="text-align: center">{{ message }}</h3>
                 </div>
+
+
             {% endif %}
+
+
         </div>
-
-
-        {% ifequal images|length 1 %}
-            {% for item in search_imaes %}
-                <a href="{% url 'image:detail' item.id %}">
-                    <img width="1300px" height="100%" src="{{ item.url }}" alt="{{ item.name }}">
-                </a>
-            {% endfor %}
-        {% endifequal %}
 
 
         <div class="search-images">

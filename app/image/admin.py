@@ -27,7 +27,7 @@ class ImageAdmin(admin.ModelAdmin):
     ordering = ['id']
 
     fields = ('name', 'description', 'categorys', 'url', 'url_thumb',
-              ('width', 'height', 'type'), 'click', ('user', 'date_add'))
+              ('width', 'height', 'type'), 'click', ('user', 'date_add'), 'filter', 'content')
     # exclude = ('name',)  # 排除该字段
 
     # 详细时间分层筛选　

@@ -17,9 +17,36 @@
         });
     </script>
 
+<script>
+    function view_images() {
+        var file = document.getElementById("file").files;
+        var result = document.getElementById("result");
+        for (i = 0; i < file.length; i++) {
+            var reader = new FileReader();
+            reader.readAsDataURL(file[i]);
+            reader.onload = function (e) {
+                result.innerHTML = result.innerHTML + '<img width="150px" src="' + this.result + '" alt="" />';
+            }
+        }
+    }
+</script>
+
 </head>
 <body>
-<form method="post" action="" enctype="multipart/form-data">
+
+ <div style="width:400px;margin: 0 auto;">
+        <form method="post" action="{% url 'user:upload' %}" enctype="multipart/form-data">
+            {#{% csrf_token %}#}
+            <input id="file" type="file" name="image_file" accept="image/*" multiple="multiple">
+            <button type="button" onclick="view_images()">读取图像</button>
+            <input type="submit" value="提交"/>
+        </form>
+    </div>
+    <div id="result">
+
+    </div>
+
+<form method="post" action="{% url 'user:release' %}" enctype="multipart/form-data">
     {% csrf_token %}
     <input type="file" name="uploadfile" accept="image/*" multiple="multiple"><br/><br/><br/>
     <input type="submit" value="提交"/>
@@ -31,12 +58,15 @@
 {% endfor %}
 
 
+
+
+
 <button id="btn">test-toastr</button>
 
 
-<br/>
+<h3>{{ res }}</h3>
 
-{{ res }}
- 
 </body>
 </html>
+
+

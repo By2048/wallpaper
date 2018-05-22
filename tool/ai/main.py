@@ -58,7 +58,7 @@ def get_token():
    """
 
 
-def get_image_content(image_path, type=1):
+def get_image_info(image_path, type=1):
     """
     Base64编码字符串，以图片文件形式请求时必填。(支持图片格式：jpg，bmp，png，jpeg)，图片大小不超过4M。最短边至少15px，最长边最大4096px
     """
@@ -86,7 +86,6 @@ def get_image_content(image_path, type=1):
         6: 'https://aip.baidubce.com/rest/2.0/solution/v1/face_audit',
     }
     response = requests.post(url=urls[type] + access_token, headers=header, data=body)
-    logging.info(response.text)
     return response.text
 
 
@@ -96,6 +95,9 @@ if __name__ == '__main__':
     img_3 = '车.jpg'
     img_4 = '动物.jpg'
     img_5 = '植物.jpg'
-    img_6 = 'yellow_1.jpg'
-    img_7 = 'yellow_2.jpg'
-    image_content = get_image_content(img_6, 0)
+    img_6 = '黄色图片1.jpg'
+    img_7 = '黄色图片2.jpg'
+
+    image_content = get_image_info(img_6, 0)
+    print(image_content)
+

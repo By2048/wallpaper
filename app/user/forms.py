@@ -13,8 +13,8 @@ class RegisterForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = UserProfile
-        fields = ['username', 'nickname', 'email', 'password1', 'password2', 'captcha', 'sex',
-                  'birthday', 'address', 'information']
+        fields = ['username', 'nickname', 'email', 'password1', 'password2', 'captcha', 'sex', 'birthday', 'address',
+                  'information']
 
 
 class ActiveForm(forms.Form):

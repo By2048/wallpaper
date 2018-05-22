@@ -46,41 +46,42 @@
 
 
 {% block content %}
-
     <div class="images">
-        <table class="table">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>ID</th>
-                <th>img</th>
-                <th>date add</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for image in images %}
+        {% if images %}
+            <table class="table">
+                <thead>
                 <tr>
-                    <th>{{ forloop.counter }}</th>
-                    <td>{{ image.id }}</td>
-                    <td>
-                        <a href="{% url 'image:detail' image.id %}">
-                            <img src={{ image.url_thumb }} alt={{ image.name }} width="100px"/>
-                        </a>
-                    </td>
-                    <td>
-                        <button class="btn btn-default" index="{{ forloop.counter }}" image_id="{{ image.id }}">删除
-                        </button>
-                    </td>
-                    <td>
-                        {{ image.date_add }}
-                    </td>
+                    <th>#</th>
+                    <th>ID</th>
+                    <th>img</th>
+                    <th>date add</th>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                {% for image in images %}
+                    <tr>
+                        <th>{{ forloop.counter }}</th>
+                        <td>{{ image.id }}</td>
+                        <td>
+                            <a href="{% url 'image:detail' image.id %}">
+                                <img src={{ image.url_thumb }} alt={{ image.name }} width="100px"/>
+                            </a>
+                        </td>
+                        <td>
+                            <button class="btn btn-default" index="{{ forloop.counter }}" image_id="{{ image.id }}">删除
+                            </button>
+                        </td>
+                        <td>
+                            {{ image.date_add }}
+                        </td>
+                    </tr>
+                    </tbody>
+                    </table>
+                {% endfor %}
+        {% else %}
+            <h2 style="text-align: center;margin-left: -311px;">暂无发布的图片</h2>
+        {% endif %}
     </div>
-
-
     <div style="clear: both"></div>
 
 {% endblock %}

@@ -53,6 +53,7 @@ class Image(models.Model):
     name = models.CharField(max_length=500, verbose_name='图片名', null=True, blank=True, default='')
     description = models.TextField(verbose_name='图片描述', null=True, blank=True)
     url = models.URLField(max_length=500, verbose_name='图片链接')
+    pid = models.IntegerField(default=0, null=True, blank=True, verbose_name='图片路径ID')
     url_thumb = models.URLField(max_length=500, verbose_name='缩略图片链接')
     categorys = models.ManyToManyField(Category, verbose_name='图片分类')
     tags = models.ManyToManyField(Tag, verbose_name='图片标签')
@@ -62,6 +63,8 @@ class Image(models.Model):
     type = models.CharField(max_length=10, choices=_type, verbose_name='图片格式')
     click = models.IntegerField(verbose_name='点击次数', default=0)
     date_add = models.DateTimeField(default=timezone.now, verbose_name='图片添加时间')
+    filter = models.TextField(default='', null=True, blank=True, verbose_name='图片审核结果')
+    content = models.TextField(default='', null=True, blank=True, verbose_name='图片AI识别内容')
 
     def __str__(self):
         return self.name + '.' + self.type
@@ -130,5 +133,3 @@ class Rating(models.Model):
         db_table = 'db_rating'
         verbose_name = '用户评分'
         verbose_name_plural = verbose_name
-
-
