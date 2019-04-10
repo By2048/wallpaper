@@ -39,14 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'app.category',
-    # 'app.tag'
-    # 'app.score',
     'app.image',
     'app.user',
     'app.home',
     'app.tmp',
-
     'captcha',
     'pure_pagination',
 ]
@@ -171,4 +167,4 @@ PAGINATION_SETTINGS = {
     'SHOW_FIRST_PAGE_WHEN_INVALID': True,
 }
 
-LOGIN_URL='/user/login/'
+LOGIN_URL = '/user/login/'

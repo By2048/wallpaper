@@ -1,8 +1,6 @@
-.idea
+.idea/
+.vscode/
 migrations/
 __pycache__/
-app/tmp
-media/image
-*.db
-*.jpg
-*.png
+log/
+
