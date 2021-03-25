@@ -30,7 +30,7 @@ Pillow==5.1.0
 PyMySQL==0.8.0
 pytz==2018.4
 PyWavelets==0.5.2
-PyYAML==3.12
+PyYAML==5.4
 redis==2.10.6
 requests==2.18.4
 scipy==1.1.0
